@@ -1,0 +1,22 @@
+{
+  "featured": [
+    {
+      "cat": "湖城記事",
+      "slug": "lakecity",
+      "desc": "郵差西西在湖城穿梭，傳遞信息，也收集這座城市的秘密。大戶人家的主人蔡大國站在大宅頂端，夢想著摩天樓。",
+      "main": true
+    },
+    {
+      "cat": "百態記",
+      "slug": "baitai",
+      "desc": "日常觀察與人間側寫",
+      "main": false
+    },
+    {
+      "cat": "動物食堂",
+      "slug": "animals",
+      "desc": "倉鼠阿姨的瓜子夢",
+      "main": false
+    }
+  ]
+}
