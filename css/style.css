@@ -43,63 +43,6 @@ a { color: inherit; text-decoration: none; }
 .dropdown-item:hover { background: var(--bg-alt); color: var(--text-primary); }
 .dropdown-divider { height: 0.5px; background: var(--border); margin: 0.25rem 0; }
 
-@media screen and (max-width: 768px) {
-    /* 縮減頂部留白 */
-    .site-header { padding: 1.5rem 0 1rem; }
-
-    .site-nav {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0;
-    }
-
-    /* 1. 隱藏主選單中的「故事」（假設它是第一個項目） */
-    /* 如果「故事」是第一個項目，用 :first-child；如果是第二個，改用 :nth-child(2) */
-    .nav-item:first-child {
-        font-size: 0;
-        padding: 0;
-        border: none;
-    }
-
-    /* 2. 讓子選單直接攤開，外觀與主選單一致 */
-    .dropdown {
-        display: block !important;
-        position: static;
-        padding: 0;
-        width: 100%;
-    }
-
-    .dropdown-inner {
-        background: transparent;
-        border: none;
-        padding: 0;
-        box-shadow: none;
-    }
-
-    /* 3. 統一所有「要顯示」的選項外觀（包括子項目與「關於」） */
-    .nav-item, .dropdown-item {
-        font-size: 13px;
-        letter-spacing: 0.05em;
-        text-transform: none;
-        padding: 10px 0;
-        width: 100%;
-        border-bottom: 0.5px solid var(--border);
-        display: block;
-        color: var(--text-primary);
-    }
-
-    /* 4. 修正：如果 .nav-item 的 font-size 被設為 0，裡面的文字會消失 */
-    /* 但我們需要「關於」保留文字，所以要單獨把「關於」救回來 */
-    /* 假設「關於」是最後一個 .nav-item */
-    .nav-item:last-child {
-        font-size: 13px;
-        border-bottom: none; /* 最後一項不留底線 */
-    }
-
-    /* 隱藏下拉箭頭 */
-    .nav-arrow { display: none; }
-}
-
 /* BOOKSHELF */
 .shelf-section { padding: 2.5rem 0 3rem; }
 .shelf-wrap { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 2px solid #b0ada6; width: 100%; }
