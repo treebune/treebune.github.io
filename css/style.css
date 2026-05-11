@@ -43,48 +43,51 @@ a { color: inherit; text-decoration: none; }
 .dropdown-item:hover { background: var(--bg-alt); color: var(--text-primary); }
 .dropdown-divider { height: 0.5px; background: var(--border); margin: 0.25rem 0; }
 
-/* MOBILE NAVIGATION */
 @media screen and (max-width: 768px) {
-    /* 調整導航容器，由橫向改為垂直 */
+    /* 1. 確保選單容器可以滾動，並限制最大高度 */
     .site-nav {
+        display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: 0; 
-        padding: 1rem 0;
+        gap: 0;
+        padding: 0.5rem 0 4rem; /* 底部增加 4rem 緩衝空間，防止被截斷 */
+        max-height: 80vh; /* 限制最高為螢幕的 80%，超過則允許內部滾動 */
+        overflow-y: auto; /* 開啟垂直滾動 */
+        -webkit-overflow-scrolling: touch; /* 讓 iOS 滾動更流暢 */
     }
 
-    /* 修正選單文字與點擊區域 */
+    /* 2. 調整項目大小與間距 */
     .nav-item {
-        font-size: 13px; /* 稍微調降大小 */
-        letter-spacing: 0.1em; /* 縮減字距，防止文字溢出或過寬 */
-        padding: 12px 0; 
+        font-size: 14px !important; /* 再縮小一點，增加細緻度 */
+        letter-spacing: 0.04em !important;
+        padding: 10px 0 !important; /* 縮減高度 */
         width: 100%;
-        border-bottom: 0.5px solid var(--border); /* 增加細線區隔，解決選單過長導致的視覺迷失 */
+        border-bottom: 0.5px solid var(--border);
+        text-transform: none !important;
+        color: var(--text-secondary) !important;
     }
 
-    /* 處理下拉選單：在手機版直接展開，避免懸停功能失效 */
+    /* 3. 處理下拉選單 */
     .dropdown {
-        position: static; 
-        display: block; 
-        padding-top: 0;
-        box-shadow: none;
+        position: static;
+        display: block;
+        padding: 0;
     }
 
     .dropdown-inner {
         background: transparent;
         border: none;
-        padding: 0 0 5px 1.2rem; /* 左側縮排 1.2rem，產生視覺上的階層感 */
-        min-width: auto;
+        padding: 0 0 0 1rem;
+        box-shadow: none;
     }
 
     .dropdown-item {
-        font-size: 12px;
-        padding: 10px 0;
-        color: var(--text-muted);
-        border: none; /* 子項目不需要底線 */
+        font-size: 13px !important;
+        padding: 8px 0 !important;
+        color: var(--text-faint) !important;
     }
-    
-    /* 移除最後一個項目的底線 */
+
+    /* 4. 移除最後一項底線 */
     .nav-item:last-child {
         border-bottom: none;
     }
