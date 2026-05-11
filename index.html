@@ -194,6 +194,10 @@
           </div>
         </div>
         </div>
+        <!-- 沙漏：手機版隱藏 -->
+        <div class="hourglass-area">
+          <canvas id="hg" width="150" height="150" style="display:block;opacity:0.82;"></canvas>
+        </div>
         <div class="shelf-right">
           <div class="dashed-book" style="width:130px;height:24px;">
             <span class="dashed-label">我在想什麼？</span>
@@ -216,7 +220,7 @@
       </div>
       <p class="shelf-hint">選哪本？</p>
 
-      <div class="stories">
+      <div class="stories no-divider">
         <p class="stories-label">還沒說完的故事</p>
         <div class="stories-main">
           <a href="/chapters/lakecity/16.html" class="stories-main-link">
@@ -243,6 +247,12 @@
     </div>
   </div>
 </main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-text">2005 — 2026 純人工書寫</p>
+  </div>
+</footer>
 <script>
   // 進場動畫結束後加上 book-ready，才開始 beckon
   document.addEventListener('DOMContentLoaded', function() {
@@ -254,6 +264,110 @@
       }, delay);
     });
   });
+</script>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-text">2005 — 2026 純人工書寫</p>
+  </div>
+</footer>
+
+<script>
+(function() {
+  var canvas = document.getElementById('hg');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W = 150, H = 150;
+  var FLOW_DURATION = 30000;
+  var FLIP_DURATION = 900;
+  var phase = 'flow';
+  var phaseStart = null;
+  var flowProgress = 0;
+
+  function easeInOut(t) { return t<0.5?2*t*t:-1+(4-2*t)*t; }
+  function lerp(a,b,t) { return a+(b-a)*t; }
+
+  var hcx = W/2, hcy = H/2;
+  var topY = hcy-65, botY = hcy+65, midY = hcy;
+  var topR = 24, midR = 4.5;
+
+  function makeShape() {
+    var p = new Path2D();
+    var hmid = (midY-topY)/2;
+    var cx = hcx;
+    p.moveTo(cx-topR, topY); p.lineTo(cx+topR, topY);
+    p.bezierCurveTo(cx+topR+10, topY+hmid*0.6, cx+midR+2, midY-hmid*0.3, cx+midR, midY);
+    p.bezierCurveTo(cx+midR+2, midY+hmid*0.3, cx+topR+10, botY-hmid*0.6, cx+topR, botY);
+    p.lineTo(cx-topR, botY);
+    p.bezierCurveTo(cx-topR-10, botY-hmid*0.6, cx-midR-2, midY+hmid*0.3, cx-midR, midY);
+    p.bezierCurveTo(cx-midR-2, midY-hmid*0.3, cx-topR-10, topY+hmid*0.6, cx-topR, topY);
+    p.closePath();
+    return p;
+  }
+
+  function drawHourglass(progress) {
+    ctx.clearRect(0, 0, W, H);
+    var sandColor = 'rgba(196,178,152,0.95)';
+    var frameColor = '#a8a49c';
+    var barColor = '#c8c4bc';
+    var cx = hcx;
+    var shape = makeShape();
+
+    ctx.save();
+    ctx.clip(shape);
+    ctx.fillStyle = 'rgba(232,226,214,0.15)';
+    ctx.fill(shape);
+
+    var sandTopY = lerp(topY, midY, progress);
+    ctx.beginPath(); ctx.rect(0, sandTopY, W, midY-sandTopY+1);
+    ctx.fillStyle = sandColor; ctx.fill();
+
+    var sandBotY = lerp(botY, midY, progress);
+    ctx.beginPath(); ctx.rect(0, sandBotY, W, botY-sandBotY+1);
+    ctx.fillStyle = sandColor; ctx.fill();
+
+    if (progress < 0.96) {
+      ctx.beginPath();
+      ctx.ellipse(cx, midY+5, 1.5, 5, 0, 0, Math.PI*2);
+      ctx.fillStyle = sandColor; ctx.fill();
+    }
+    ctx.restore();
+
+    ctx.strokeStyle = frameColor; ctx.lineWidth = 1.2;
+    ctx.stroke(shape);
+
+    ctx.fillStyle = barColor; ctx.strokeStyle = frameColor; ctx.lineWidth = 0.8;
+    ctx.beginPath(); ctx.roundRect(cx-topR-2, topY-6, (topR+2)*2, 7, 3); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(cx-midR-2, midY-3, (midR+2)*2, 6, 2); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(cx-topR-2, botY-1, (topR+2)*2, 7, 3); ctx.fill(); ctx.stroke();
+
+    ctx.beginPath();
+    ctx.ellipse(cx, botY+9, 20, 3.5, 0, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(0,0,0,0.07)'; ctx.fill();
+  }
+
+  function render(ts) {
+    if (!phaseStart) phaseStart = ts;
+    var elapsed = ts - phaseStart;
+    if (phase === 'flow') {
+      flowProgress = Math.min(elapsed/FLOW_DURATION, 1);
+      drawHourglass(flowProgress);
+      if (flowProgress >= 1) { phase = 'flip'; phaseStart = ts; }
+    } else {
+      var t = Math.min(elapsed/FLIP_DURATION, 1);
+      ctx.clearRect(0, 0, W, H);
+      ctx.save();
+      ctx.translate(W/2, H/2);
+      ctx.rotate(easeInOut(t)*Math.PI);
+      ctx.translate(-W/2, -H/2);
+      drawHourglass(1);
+      ctx.restore();
+      if (t >= 1) { phase = 'flow'; phaseStart = ts; flowProgress = 0; }
+    }
+    requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
+})();
 </script>
 </body>
 </html>
