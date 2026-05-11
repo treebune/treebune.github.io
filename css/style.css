@@ -201,6 +201,36 @@ a { color: inherit; text-decoration: none; }
 .about-body p { margin-bottom: 1.5rem; }
 .about-quote { font-size: 14px; font-style: italic; color: var(--text-muted); border-left: 2px solid var(--border); padding-left: 1rem; margin-top: 2rem; line-height: 1.8; }
 
+
+/* HOURGLASS */
+.hourglass-area {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 1rem;
+}
+
+/* FOOTER */
+.site-footer {
+  border-top: 0.5px solid var(--border);
+  padding: 1.5rem 0;
+  margin-top: 3rem;
+}
+.footer-text {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+/* 移除 stories 分隔線，縮短距離 */
+.stories {
+  border-top: none !important;
+  margin-top: 1.5rem !important;
+  padding-top: 0 !important;
+}
+
 /* MOBILE */
 @media (max-width: 700px) {
   .container { padding: 0 1.25rem; }
@@ -233,6 +263,7 @@ a { color: inherit; text-decoration: none; }
   .stories-sides { flex-direction: column; gap: 1.25rem; }
 
   /* 漢堡選單 */
+  .hourglass-area { display: none; }
   .site-nav { display: none; }
   .hamburger {
     display: flex; flex-direction: column; gap: 5px;
