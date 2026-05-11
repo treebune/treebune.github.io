@@ -47,6 +47,8 @@ a { color: inherit; text-decoration: none; }
 .shelf-section { padding: 1.25rem 0 3rem; }
 .shelf-wrap { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 2px solid #b0ada6; width: 100%; }
 .shelf-left { display: flex; align-items: flex-end; gap: 0; }
+.shelf-left:hover .book { z-index: 0; }
+.shelf-left:hover .book:hover { z-index: 20; }
 .shelf-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; gap: 0; }
 
 /* 進場動畫 */
