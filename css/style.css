@@ -222,6 +222,7 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.15em;
   color: var(--text-faint);
   font-style: italic;
+  text-align: center;
 }
 
 /* 移除 stories 分隔線，縮短距離 */
