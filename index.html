@@ -196,7 +196,7 @@
         </div>
         <!-- 沙漏：手機版隱藏 -->
         <div class="hourglass-area">
-          <canvas id="hg" width="150" height="150" style="display:block;opacity:0.82;"></canvas>
+          <canvas id="hg" width="100" height="100" style="display:block;opacity:0.82;"></canvas>
         </div>
         <div class="shelf-right">
           <div class="dashed-book" style="width:130px;height:24px;">
@@ -266,18 +266,14 @@
   });
 </script>
 
-<footer class="site-footer">
-  <div class="container">
-    <p class="footer-text">2005 — 2026 純人工書寫</p>
-  </div>
-</footer>
+
 
 <script>
 (function() {
   var canvas = document.getElementById('hg');
   if (!canvas) return;
   var ctx = canvas.getContext('2d');
-  var W = 150, H = 150;
+  var W = 100, H = 100;
   var FLOW_DURATION = 30000;
   var FLIP_DURATION = 900;
   var phase = 'flow';
