@@ -41,8 +41,12 @@ a { color: inherit; text-decoration: none; }
 .tagline-link { transition: color 0.2s; }
 .tagline-link:hover { color: var(--text-primary); }
 
-/* NAV - 改善版 */
-.site-nav { display: flex; gap: 2rem; align-items: center; }
+/* ==================== NAV 選單修正 ==================== */
+.site-nav { 
+  display: flex; 
+  gap: 2rem; 
+  align-items: center; 
+}
 
 .nav-item {
   position: relative;
@@ -53,17 +57,17 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer;
   user-select: none;
   transition: color 0.12s;
-  padding: 8px 0 18px 0;           /* 增加底部 padding */
+  padding: 8px 0 22px 0;     /* 增加底部空間 */
 }
 
-/* 關鍵：用一個隱形區域連接 trigger 和 dropdown */
+/* 關鍵：隱形橋樑，解決滑鼠移動時選單消失 */
 .nav-item::after {
   content: '';
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -12px;           /* 往下延伸 */
-  height: 30px;            /* 增加容錯空間 */
+  bottom: -15px;
+  height: 40px;               /* 增加容錯高度 */
   z-index: 10;
 }
 
@@ -73,20 +77,44 @@ a { color: inherit; text-decoration: none; }
   top: 100%;
   left: 0;
   z-index: 200;
-  margin-top: 4px;         /* 減少間隙 */
+  margin-top: 6px;            /* 適中間距 */
 }
 
 .nav-item:hover .dropdown {
   display: block;
 }
 
-/* 其他保持不變 */
+/* 保留原本的下拉框美觀 */
 .dropdown-inner {
   background: #f8f5ef;
   border: 0.5px solid var(--border);
   min-width: 160px;
   padding: 0.5rem 0;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  border-radius: 4px;         /* 可選：加一點圓角更好看 */
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  display: block;
+  transition: background 0.1s;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-alt);
+  color: var(--text-primary);
+}
+
+.dropdown-divider {
+  height: 0.5px;
+  background: var(--border);
+  margin: 0.25rem 0;
 }
 
 /* BOOKSHELF */
