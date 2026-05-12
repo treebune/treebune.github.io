@@ -344,6 +344,7 @@ a { color: inherit; text-decoration: none; }
   width: 14em;
   height: 14em;
   vertical-align: bottom;
+  margin-left: -40px;
 }
 
 .shelf-hint {
