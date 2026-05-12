@@ -41,17 +41,53 @@ a { color: inherit; text-decoration: none; }
 .tagline-link { transition: color 0.2s; }
 .tagline-link:hover { color: var(--text-primary); }
 
-/* NAV */
+/* NAV - 改善版 */
 .site-nav { display: flex; gap: 2rem; align-items: center; }
-.nav-item { position: relative; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-faint); cursor: pointer; user-select: none; transition: color 0.12s; padding-bottom: 12px; margin-bottom: -12px; }
-.nav-item:hover { color: var(--text-primary); }
-.nav-arrow { font-size: 9px; margin-left: 3px; opacity: 0.6; }
-.dropdown { display: none; position: absolute; top: 100%; left: 0; z-index: 200; margin-top: 12px; }
-.dropdown-inner { background: #f8f5ef; border: 0.5px solid var(--border); min-width: 160px; padding: 0.5rem 0; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-.nav-item:hover .dropdown { display: block; }
-.dropdown-item { padding: 0.5rem 1rem; font-size: 13px; letter-spacing: 0.02em; text-transform: none; color: var(--text-secondary); cursor: pointer; white-space: nowrap; display: block; transition: background 0.1s; }
-.dropdown-item:hover { background: var(--bg-alt); color: var(--text-primary); }
-.dropdown-divider { height: 0.5px; background: var(--border); margin: 0.25rem 0; }
+
+.nav-item {
+  position: relative;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.12s;
+  padding: 8px 0 18px 0;           /* 增加底部 padding */
+}
+
+/* 關鍵：用一個隱形區域連接 trigger 和 dropdown */
+.nav-item::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -12px;           /* 往下延伸 */
+  height: 30px;            /* 增加容錯空間 */
+  z-index: 10;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 200;
+  margin-top: 4px;         /* 減少間隙 */
+}
+
+.nav-item:hover .dropdown {
+  display: block;
+}
+
+/* 其他保持不變 */
+.dropdown-inner {
+  background: #f8f5ef;
+  border: 0.5px solid var(--border);
+  min-width: 160px;
+  padding: 0.5rem 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
 
 /* BOOKSHELF */
 .shelf-section { padding: 1.25rem 0 3rem; }
