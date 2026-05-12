@@ -210,13 +210,12 @@ a { color: inherit; text-decoration: none; }
 
 
 /* HOURGLASS */
-/* HOURGLASS */
-.hourglass-area { 
-  flex: 1; display: flex; align-items: flex-end; justify-content: flex-end; padding: 0 2rem 0 0; 
-  overflow: visible; 
-}
-.hourglass-area img, .hourglass-area svg { 
-  height: 9em !important; 
+.hourglass-area canvas { 
+  display: block;
+  opacity: 0.85;
+  vertical-align: bottom;
+  width: 9em; 
+  height: 9em; 
   transform-origin: center center; 
   transition: transform 0.6s ease; 
 }
