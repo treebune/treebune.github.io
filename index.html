@@ -80,6 +80,7 @@
             <span class="book-spine-title">湖城記事</span>
             <span class="book-num">16</span>
           </div>
+        <div style="height:4px;background:#7a8e9c;border-radius:0 0 2px 2px;margin-top:-1px;"></div>
         </div>
         <div class="book" onclick="location.href='/chapters/name/01.html'">
           <div class="tooltip">
@@ -94,6 +95,7 @@
             <span class="book-spine-title">名字</span>
             <span class="book-num">10</span>
           </div>
+        <div style="height:4px;background:#9c8078;border-radius:0 0 2px 2px;margin-top:-1px;"></div>
         </div>
         <div class="book" onclick="location.href='/chapters/story/01.html'">
           <div class="tooltip">
@@ -108,6 +110,7 @@
             <span class="book-spine-title">故事之城</span>
             <span class="book-num">2</span>
           </div>
+        <div style="height:4px;background:#c0b4c4;border-radius:0 0 2px 2px;margin-top:-1px;"></div>
         </div>
         <div class="book" onclick="location.href='/chapters/yanran/01.html'">
           <div class="tooltip">
@@ -122,6 +125,7 @@
             <span class="book-spine-title">炎涼記</span>
             <span class="book-num">3</span>
           </div>
+        <div style="height:4px;background:#bcc0b0;border-radius:0 0 2px 2px;margin-top:-1px;"></div>
         </div>
         <div class="book" onclick="location.href='/chapters/baitai/01.html'">
           <div class="tooltip">
@@ -136,6 +140,7 @@
             <span class="book-spine-title">百態記</span>
             <span class="book-num">28</span>
           </div>
+        <div style="height:4px;background:#b4bcc0;border-radius:0 0 2px 2px;margin-top:-1px;"></div>
         </div>
         <div class="book" onclick="location.href='/chapters/limu/01.html'">
           <div class="tooltip">
@@ -150,6 +155,7 @@
             <span class="book-spine-title">黎小木上學記</span>
             <span class="book-num">10</span>
           </div>
+        <div style="height:4px;background:#c4c0a8;border-radius:0 0 2px 2px;margin-top:-1px;"></div>
         </div>
         <div class="book" onclick="location.href='/chapters/hudi/01.html'">
           <div class="tooltip">
@@ -164,6 +170,7 @@
             <span class="book-spine-title">惠帝列傳</span>
             <span class="book-num">2</span>
           </div>
+        <div style="height:4px;background:#b8c0b8;border-radius:0 0 2px 2px;margin-top:-1px;"></div>
         </div>
         <div class="book" onclick="location.href='/chapters/traveler/01.html'">
           <div class="tooltip">
@@ -178,6 +185,7 @@
             <span class="book-spine-title">旅行者回憶錄</span>
             <span class="book-num">1</span>
           </div>
+        <div style="height:4px;background:#c8bca8;border-radius:0 0 2px 2px;margin-top:-1px;"></div>
         </div>
         <div class="book" onclick="location.href='/chapters/animals/01.html'">
           <div class="tooltip">
@@ -192,11 +200,12 @@
             <span class="book-spine-title">動物食堂</span>
             <span class="book-num">3</span>
           </div>
+        <div style="height:4px;background:#a8b4a4;border-radius:0 0 2px 2px;margin-top:-1px;"></div>
         </div>
         </div>
         <!-- 沙漏：手機版隱藏 -->
         <div class="hourglass-area">
-          <canvas id="hg" width="150" height="150" style="display:block;opacity:0.82;width:100px;height:100px;"></canvas>
+          <canvas id="hg" width="200" height="200" style="display:block;opacity:0.85;width:130px;height:130px;vertical-align:bottom;"></canvas>
         </div>
         <div class="shelf-right">
           <div class="dashed-book" style="width:130px;height:24px;">
@@ -207,7 +216,7 @@
             <span class="dashed-label">繆思趕路中⋯⋯</span>
             <span class="dashed-hover">快了，應該快到了</span>
           </div>
-          <div class="suosui-wrap" onclick="location.href='/chapters/suosui/01.html'">
+          <div class="suosui-wrap" onclick="location.href='/chapters/suosui/66.html'">
             <svg width="220" height="58" xmlns="http://www.w3.org/2000/svg" display="block">
               <rect width="220" height="58" fill="#7a8c7a" rx="3" ry="3"/>
               <rect width="220" height="10" y="48" fill="url(#sh)"/>
@@ -275,7 +284,7 @@
   var canvas = document.getElementById('hg');
   if (!canvas) return;
   var ctx = canvas.getContext('2d');
-  var W = 150, H = 150;
+  var W = 200, H = 200;
   var FLOW_DURATION = 30000;
   var FLIP_DURATION = 900;
   var phase = 'flow';
@@ -285,63 +294,74 @@
   function easeInOut(t) { return t<0.5?2*t*t:-1+(4-2*t)*t; }
   function lerp(a,b,t) { return a+(b-a)*t; }
 
-  var hcx = W/2, hcy = H/2;
-  var topY = hcy-65, botY = hcy+65, midY = hcy;
-  var topR = 24, midR = 4.5;
+  var cx = W/2;
+  var hgH = 160;
+  var topY = H - hgH - 8;
+  var botY = H - 12;
+  var midY = (topY + botY) / 2;
+  var topR = 26, midR = 3.5, botR = 26;
 
   function makeShape() {
-    var p = new Path2D();
-    var hmid = (midY-topY)/2;
-    var cx = hcx;
-    p.moveTo(cx-topR, topY); p.lineTo(cx+topR, topY);
-    p.bezierCurveTo(cx+topR+10, topY+hmid*0.6, cx+midR+2, midY-hmid*0.3, cx+midR, midY);
-    p.bezierCurveTo(cx+midR+2, midY+hmid*0.3, cx+topR+10, botY-hmid*0.6, cx+topR, botY);
-    p.lineTo(cx-topR, botY);
-    p.bezierCurveTo(cx-topR-10, botY-hmid*0.6, cx-midR-2, midY+hmid*0.3, cx-midR, midY);
-    p.bezierCurveTo(cx-midR-2, midY-hmid*0.3, cx-topR-10, topY+hmid*0.6, cx-topR, topY);
-    p.closePath();
-    return p;
+    var p = new Path2D(), h = (midY-topY)/2;
+    p.moveTo(cx-topR,topY); p.lineTo(cx+topR,topY);
+    p.bezierCurveTo(cx+topR+13,topY+h*0.5,cx+midR+2,midY-h*0.2,cx+midR,midY);
+    p.bezierCurveTo(cx+midR+2,midY+h*0.2,cx+topR+13,botY-h*0.5,cx+topR,botY);
+    p.lineTo(cx-topR,botY);
+    p.bezierCurveTo(cx-topR-13,botY-h*0.5,cx-midR-2,midY+h*0.2,cx-midR,midY);
+    p.bezierCurveTo(cx-midR-2,midY-h*0.2,cx-topR-13,topY+h*0.5,cx-topR,topY);
+    p.closePath(); return p;
   }
 
   function drawHourglass(progress) {
     ctx.clearRect(0, 0, W, H);
-    var sandColor = 'rgba(196,178,152,0.95)';
-    var frameColor = '#a8a49c';
-    var barColor = '#c8c4bc';
-    var cx = hcx;
-    var shape = makeShape();
-
-    ctx.save();
-    ctx.clip(shape);
-    ctx.fillStyle = 'rgba(232,226,214,0.15)';
-    ctx.fill(shape);
-
-    var sandTopY = lerp(topY, midY, progress);
-    ctx.beginPath(); ctx.rect(0, sandTopY, W, midY-sandTopY+1);
-    ctx.fillStyle = sandColor; ctx.fill();
-
-    var sandBotY = lerp(botY, midY, progress);
-    ctx.beginPath(); ctx.rect(0, sandBotY, W, botY-sandBotY+1);
-    ctx.fillStyle = sandColor; ctx.fill();
-
-    if (progress < 0.96) {
-      ctx.beginPath();
-      ctx.ellipse(cx, midY+5, 1.5, 5, 0, 0, Math.PI*2);
-      ctx.fillStyle = sandColor; ctx.fill();
+    var s = makeShape();
+    ctx.save(); ctx.clip(s);
+    var g = ctx.createLinearGradient(cx-topR,0,cx+topR,0);
+    g.addColorStop(0,'rgba(195,190,182,0.14)'); g.addColorStop(0.3,'rgba(245,240,232,0.24)');
+    g.addColorStop(0.7,'rgba(235,230,222,0.2)'); g.addColorStop(1,'rgba(195,190,182,0.12)');
+    ctx.fillStyle=g; ctx.fill(s);
+    var ty = lerp(topY, midY, progress);
+    if (ty < midY) {
+      var sg = ctx.createLinearGradient(0,ty,0,midY);
+      sg.addColorStop(0,'rgba(215,198,172,0.88)'); sg.addColorStop(1,'rgba(196,178,152,0.98)');
+      ctx.beginPath(); ctx.rect(0,ty,W,midY-ty+1); ctx.fillStyle=sg; ctx.fill();
+      var sw = lerp(topR,midR,(ty-topY)/(midY-topY))*0.65;
+      ctx.beginPath(); ctx.ellipse(cx,ty+1.5,sw,2,0,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,248,235,0.5)'; ctx.fill();
     }
-    ctx.restore();
-
-    ctx.strokeStyle = frameColor; ctx.lineWidth = 1.2;
-    ctx.stroke(shape);
-
-    ctx.fillStyle = barColor; ctx.strokeStyle = frameColor; ctx.lineWidth = 0.8;
-    ctx.beginPath(); ctx.roundRect(cx-topR-2, topY-6, (topR+2)*2, 7, 3); ctx.fill(); ctx.stroke();
-    ctx.beginPath(); ctx.roundRect(cx-midR-2, midY-3, (midR+2)*2, 6, 2); ctx.fill(); ctx.stroke();
-    ctx.beginPath(); ctx.roundRect(cx-topR-2, botY-1, (topR+2)*2, 7, 3); ctx.fill(); ctx.stroke();
-
+    var by = lerp(botY, midY, progress);
+    if (by < botY) {
+      var bg2 = ctx.createLinearGradient(0,by,0,botY);
+      bg2.addColorStop(0,'rgba(196,178,152,0.95)'); bg2.addColorStop(1,'rgba(182,164,138,0.98)');
+      ctx.beginPath(); ctx.rect(0,by,W,botY-by+1); ctx.fillStyle=bg2; ctx.fill();
+      var bw = lerp(midR,botR,(by-midY)/(botY-midY))*0.5;
+      ctx.beginPath(); ctx.ellipse(cx,by,bw,1.5,0,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,248,235,0.4)'; ctx.fill();
+    }
+    if (progress < 0.96) {
+      ctx.beginPath(); ctx.ellipse(cx,midY+5,1.5,5,0,0,Math.PI*2);
+      ctx.fillStyle='rgba(196,178,152,0.9)'; ctx.fill();
+    }
     ctx.beginPath();
-    ctx.ellipse(cx, botY+9, 20, 3.5, 0, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(0,0,0,0.07)'; ctx.fill();
+    ctx.moveTo(cx-topR+5,topY+5);
+    ctx.bezierCurveTo(cx-topR+9,topY+22,cx-midR,midY-8,cx-midR+2,midY);
+    ctx.strokeStyle='rgba(255,255,255,0.22)'; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.restore();
+    ctx.strokeStyle='rgba(155,150,142,0.85)'; ctx.lineWidth=1; ctx.stroke(s);
+    function drawBar(x,y,w,h,r) {
+      var bg=ctx.createLinearGradient(x,0,x+w,0);
+      bg.addColorStop(0,'#aeaaa2'); bg.addColorStop(0.25,'#d2cec6');
+      bg.addColorStop(0.75,'#cac6be'); bg.addColorStop(1,'#a8a49c');
+      ctx.fillStyle=bg; ctx.strokeStyle='rgba(130,126,118,0.5)'; ctx.lineWidth=0.5;
+      ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.roundRect(x+2,y+1,w-4,h*0.3,r);
+      ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.fill();
+    }
+    drawBar(cx-topR-3,topY-8,(topR+3)*2,9,3.5);
+    drawBar(cx-midR-3.5,midY-3.5,(midR+3.5)*2,7,2);
+    drawBar(cx-topR-3,botY,(topR+3)*2,9,3.5);
+    ctx.beginPath(); ctx.ellipse(cx,botY+10,20,3,0,0,Math.PI*2);
+    ctx.fillStyle='rgba(0,0,0,0.07)'; ctx.fill();
   }
 
   function render(ts) {
@@ -355,9 +375,9 @@
       var t = Math.min(elapsed/FLIP_DURATION, 1);
       ctx.clearRect(0, 0, W, H);
       ctx.save();
-      ctx.translate(W/2, H/2);
+      ctx.translate(W/2, midY);
       ctx.rotate(easeInOut(t)*Math.PI);
-      ctx.translate(-W/2, -H/2);
+      ctx.translate(-W/2, -midY);
       drawHourglass(1);
       ctx.restore();
       if (t >= 1) { phase = 'flow'; phaseStart = ts; flowProgress = 0; }
