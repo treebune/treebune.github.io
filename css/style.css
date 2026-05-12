@@ -148,30 +148,67 @@ a { color: inherit; text-decoration: none; }
 .book:nth-child(9) { animation-delay: 0.61s; }
 .book.book-ready { opacity: 1; }
 
-/* 懸停：亮度加陰影，不放大，不閃 */
+/* 懸停：亮度加陰影 + 微微抽出效果（減少閃爍） */
+.book {
+  position: relative;
+  flex-shrink: 0;
+  transition: filter 0.25s ease, 
+              transform 0.28s ease, 
+              box-shadow 0.28s ease;
+  will-change: transform, filter, box-shadow;
+}
+
 .book:hover {
   z-index: 30 !important;
-  animation: none !important;
-  opacity: 1 !important;
-  filter: brightness(1.08) drop-shadow(0 6px 14px rgba(0,0,0,0.15));
-  transition: filter 0.18s ease;
+  transform: translateY(-4px);           /* 微微被抽出的感覺 */
+  filter: brightness(1.09) drop-shadow(0 10px 22px rgba(0,0,0,0.19));
+  transition: filter 0.2s ease, 
+              transform 0.25s ease, 
+              box-shadow 0.25s ease;
 }
 
 .book-spine {
-  display: flex; flex-direction: column; justify-content: space-between; align-items: center;
-  padding: 1rem 0.55rem 0.6rem; border-radius: 3px 3px 0 0; position: relative; cursor: pointer;
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 1rem 0.55rem 0.6rem; 
+  border-radius: 3px 3px 0 0; 
+  position: relative; 
+  cursor: pointer;
   box-shadow: inset 2px 0 4px rgba(255,255,255,0.15), inset -2px 0 4px rgba(0,0,0,0.08);
 }
+
 .book-spine::before {
-  content: ''; position: absolute; bottom: -6px; left: 4px; right: 4px;
-  height: 8px; background: rgba(0,0,0,0); border-radius: 50%; filter: blur(4px);
-  transition: all 0.15s ease; pointer-events: none;
+  content: ''; 
+  position: absolute; 
+  bottom: -6px; 
+  left: 4px; 
+  right: 4px;
+  height: 8px; 
+  background: rgba(0,0,0,0.07); 
+  border-radius: 50%; 
+  filter: blur(4px);
+  transition: all 0.25s ease; 
+  pointer-events: none;
 }
-.book:hover .book-spine::before { background: rgba(0,0,0,0.15); bottom: -8px; }
+
+.book:hover .book-spine::before { 
+  background: rgba(0,0,0,0.18); 
+  bottom: -10px;
+  height: 10px;
+}
+
 .book-spine::after {
-  content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 5px;
+  content: ''; 
+  position: absolute; 
+  top: 0; 
+  right: 0; 
+  bottom: 0; 
+  width: 5px;
   background: linear-gradient(to right, transparent, rgba(0,0,0,0.12));
-  border-radius: 0 3px 0 0; pointer-events: none;
+  border-radius: 0 3px 0 0; 
+  pointer-events: none;
 }
 
 .book-spine-title { writing-mode: vertical-lr; text-orientation: upright; font-size: 12px; letter-spacing: 0.05em; flex: 1; display: flex; align-items: center; }
