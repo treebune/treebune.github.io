@@ -118,7 +118,6 @@ a { color: inherit; text-decoration: none; }
   display: none; position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%);
   background: var(--bg-solid); border: 0.5px solid var(--border); width: 180px; z-index: 50; overflow: hidden;
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  pointer-events: none;
 }
 .book:hover .tooltip { display: block; }
 .tooltip-img { width: 100%; height: 100px; object-fit: cover; display: block; filter: saturate(0.4) brightness(0.95); }
@@ -305,4 +304,24 @@ a { color: inherit; text-decoration: none; }
 @media (min-width: 701px) {
   .hamburger { display: none; }
   .mobile-menu { display: none !important; }
+}
+
+/* 讓書本往上跳時，下方仍有透明感應區托住游標 */
+.book::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  height: 20px;
+}
+
+/* 讓提示框與書本之間沒有斷層，防止游標往上移動時中斷 */
+.tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
 }
