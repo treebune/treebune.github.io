@@ -31,83 +31,22 @@ body > * { position: relative; z-index: 1; }
 a { color: inherit; text-decoration: none; }
 .container { max-width: var(--max-w); margin: 0 auto; padding: 0 2.5rem; }
 
-/* --- HEADER & NAV (修正選單穿透層級) --- */
-.site-header { border-bottom: 0.5px solid var(--border); padding: 2.5rem 0 2rem; position: relative; z-index: 100; }
+/* HEADER */
+.site-header { border-bottom: 0.5px solid var(--border); padding: 2.5rem 0 2rem; position: relative; z-index: 1000; }
 .site-header .container { display: flex; flex-direction: column; }
 .site-eyebrow { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.3rem; opacity: 0.8; }
 .site-name { font-size: 36px; font-weight: 400; letter-spacing: 0.03em; color: var(--text-primary); margin-bottom: 0.4rem; }
+.site-name a { color: inherit; }
 .site-tagline { font-size: 12px; font-style: italic; color: var(--text-faint); letter-spacing: 0.08em; margin-bottom: 1.5rem; }
+.tagline-link { transition: color 0.2s; }
+.tagline-link:hover { color: var(--text-primary); }
 
-.site-nav { display: flex; gap: 2rem; align-items: center; position: relative; }
-.nav-item { position: relative; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-faint); cursor: pointer; transition: color 0.12s; }
+/* NAV - 修復選單穿透 */
+.site-nav { display: flex; gap: 2rem; align-items: center; }
+.nav-item { position: relative; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-faint); cursor: pointer; user-select: none; transition: color 0.12s; }
 .nav-item:hover { color: var(--text-primary); }
-
-.dropdown { 
-  display: none; 
-  position: absolute; 
-  top: 100%; 
-  left: 0; 
-  padding-top: 12px; 
-  z-index: 999; 
-}
-.dropdown-inner { 
-  background: rgba(248, 245, 239, 0.98); 
-  backdrop-filter: blur(10px); 
-  border: 0.5px solid var(--border); 
-  min-width: 160px; 
-  padding: 0.5rem 0; 
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
-}
+.nav-arrow { font-size: 9px; margin-left: 3px; opacity: 0.6; }
+.dropdown { display: none; position: absolute; top: 100%; left: 0; padding-top: 12px; z-index: 2000; }
+.dropdown-inner { background: #f8f5ef; border: 0.5px solid var(--border); min-width: 160px; padding: 0.5rem 0; box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
 .nav-item:hover .dropdown { display: block; }
-.dropdown-item { padding: 0.5rem 1rem; font-size: 13px; color: var(--text-secondary); display: block; transition: background 0.1s; }
-.dropdown-item:hover { background: var(--bg-alt); color: var(--text-primary); }
-
-/* --- BOOKSHELF (修正懸停閃爍與 tooltip 搶焦點) --- */
-.shelf-section { padding: 1.25rem 0 3rem; position: relative; z-index: 10; }
-.shelf-wrap { display: flex; align-items: flex-end; justify-content: space-between; border-bottom: 2px solid #b0ada6; width: 100%; }
-.shelf-left { display: flex; align-items: flex-end; gap: 0; }
-
-@keyframes bookFadeIn {
-  from { opacity: 0; filter: blur(8px); transform: translateY(6px); }
-  to   { opacity: 1; filter: blur(0);   transform: translateY(0); }
-}
-
-.book {
-  position: relative; flex-shrink: 0;
-  animation: bookFadeIn 0.8s ease forwards;
-  opacity: 0; transform-origin: bottom center;
-  transition: transform 0.2s ease, filter 0.18s ease;
-}
-.book:nth-child(1) { animation-delay: 0.05s; }
-.book:nth-child(2) { animation-delay: 0.12s; }
-.book:nth-child(3) { animation-delay: 0.19s; }
-.book:nth-child(4) { animation-delay: 0.26s; }
-.book:nth-child(5) { animation-delay: 0.33s; }
-
-.book:hover {
-  z-index: 50 !important;
-  opacity: 1 !important;
-  transform: translateY(-4px);
-  filter: brightness(1.08) drop-shadow(0 6px 14px rgba(0,0,0,0.15));
-}
-
-.book-spine {
-  display: flex; flex-direction: column; justify-content: space-between; align-items: center;
-  padding: 1rem 0.55rem 0.6rem; border-radius: 3px 3px 0 0; position: relative; cursor: pointer;
-  box-shadow: inset 2px 0 4px rgba(255,255,255,0.15), inset -2px 0 4px rgba(0,0,0,0.08);
-}
-
-.tooltip {
-  display: block; opacity: 0; pointer-events: none; /* 防止滑鼠干擾 */
-  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(5px);
-  background: var(--bg-solid); border: 0.5px solid var(--border); width: 180px; z-index: 200;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-.book:hover .tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* --- FOOTER --- */
-.site-footer { border-top: 0.5px solid var(--border); padding: 0.75rem 0; margin-top: 1rem; text-align: center; }
-.footer-text { font-size: 11px; letter-spacing: 0.15em; color: var(--text-faint); font-style: italic; }
-
-/* 剩餘關於、故事樣式等內容皆已包含在此邏輯中 */
+.dropdown-item { padding: 0.5rem 1rem; font-size: 13px; letter-spacing: 0.02em; text-transform:
