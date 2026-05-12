@@ -68,7 +68,7 @@
       <div class="shelf-section">
         <div class="shelf-wrap">
 
-          <!-- 左側：直立書脊 -->
+          <!-- 左側：直立書脊 + 最右兩本沉默書 -->
           <div class="shelf-left">
 
             <div class="book book-lakecity" onclick="location.href='/chapters/lakecity/01.html'">
@@ -188,26 +188,25 @@
               <div class="book-spine-shadow"></div>
             </div>
 
+            <!-- 沉默書：直立，不互動 -->
+            <div class="silent-book-upright book-silent-a">
+              <div class="book-spine">
+                <span class="book-spine-title">我在想什麼</span>
+              </div>
+              <div class="book-spine-shadow"></div>
+            </div>
+
+            <div class="silent-book-upright book-silent-b">
+              <div class="book-spine">
+                <span class="book-spine-title">繆思趕路中</span>
+              </div>
+              <div class="book-spine-shadow"></div>
+            </div>
+
           </div>
 
-          <!-- 沙漏：手機版隱藏 -->
-          <div class="hourglass-area">
-            <canvas id="hg" width="200" height="200"></canvas>
-          </div>
-
-          <!-- 右側：沉默書 + 瑣碎集 -->
+          <!-- 右側：沙漏，瑣碎集疊在左側 -->
           <div class="shelf-right">
-
-            <div class="silent-book" style="width:28px;height:130px;">
-              <span class="silent-book-label">我在想什麼</span>
-            </div>
-            <div class="silent-book-shadow" style="width:28px;"></div>
-
-            <div class="silent-book" style="width:28px;height:110px;">
-              <span class="silent-book-label">繆思趕路中</span>
-            </div>
-            <div class="silent-book-shadow" style="width:28px;"></div>
-
             <div class="suosui-wrap" onclick="location.href='/chapters/suosui/66.html'">
               <svg width="220" height="58" xmlns="http://www.w3.org/2000/svg" display="block">
                 <rect width="220" height="58" fill="#7a8c7a" rx="3" ry="3"/>
@@ -217,13 +216,16 @@
                 <text x="194" y="29" font-family="'EB Garamond',Georgia,serif" font-size="10" fill="#e8e4da" opacity="0.6" font-style="italic" transform="rotate(-90,194,29)" text-anchor="middle" dominant-baseline="middle">72</text>
               </svg>
             </div>
-
+            <div class="hourglass-area">
+              <canvas id="hg" width="200" height="200"></canvas>
+            </div>
           </div>
+
         </div>
 
         <p class="shelf-hint">選哪本？</p>
 
-        <div class="stories no-divider">
+        <div class="stories">
           <p class="stories-label">還沒說完的故事</p>
           <div class="stories-main">
             <a href="/chapters/lakecity/16.html" class="stories-main-link">
@@ -265,9 +267,7 @@
       var books = document.querySelectorAll('.shelf-left .book');
       books.forEach(function(book, i) {
         var delay = 800 + (i * 70) + 200;
-        setTimeout(function() {
-          book.classList.add('book-ready');
-        }, delay);
+        setTimeout(function() { book.classList.add('book-ready'); }, delay);
       });
     });
   </script>
@@ -278,8 +278,8 @@
     if (!canvas) return;
     var ctx = canvas.getContext('2d');
     var W = 200, H = 200;
-    var FLOW_DURATION = 60000;
-    var FLIP_DURATION = 900;
+    var FLOW_DURATION = 180000;
+    var FLIP_DURATION = 1200;
     var phase = 'flow';
     var phaseStart = null;
     var flowProgress = 0;
@@ -287,10 +287,8 @@
     function easeInOut(t) { return t<0.5?2*t*t:-1+(4-2*t)*t; }
     function lerp(a,b,t) { return a+(b-a)*t; }
 
-    var cx = W/2;
-    var hgH = 160;
-    var topY = H - hgH - 8;
-    var botY = H - 12;
+    var cx = W/2, hgH = 160;
+    var topY = H - hgH - 8, botY = H - 12;
     var midY = (topY + botY) / 2;
     var topR = 26, midR = 3.5, botR = 26;
 
