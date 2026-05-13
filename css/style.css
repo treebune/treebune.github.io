@@ -82,13 +82,12 @@ a { color: inherit; text-decoration: none; }
   position: relative;
 }
 
-.shelf-wrap::after {
+.shelf-section::after {
   content: "";
-  position: absolute;
-  left: 0; right: 0; bottom: -6px;
+  display: block;
   height: 12px;
   background: radial-gradient(ellipse at 50% 0%, rgba(80,72,60,0.18) 0%, rgba(80,72,60,0.06) 60%, transparent 100%);
-  pointer-events: none;
+  margin-top: -6px;
 }
 
 .shelf-left {
