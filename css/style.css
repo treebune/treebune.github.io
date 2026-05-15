@@ -488,6 +488,7 @@ a { color: inherit; text-decoration: none; }
   .chapter-nav { max-width: 100%; }
   .reading-sidebar { padding: 1.75rem 1.25rem; }
   .about-wrap { padding: 2rem 1.25rem; }
+  .tooltip { display: none; }
 }
 
 @media (min-width: 701px) {
