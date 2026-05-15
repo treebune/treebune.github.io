@@ -28,14 +28,14 @@
         <a class="nav-item" href="/about.html">關於</a>
         <a class="nav-item" href="/letter.html">寫信</a>
       </nav>
-      <div class="hamburger" onclick="var m=document.querySelector('.mobile-menu');if(m)m.classList.add('open')">
+      <div class="hamburger">
         <span></span><span></span><span></span>
       </div>
     </div>
   </header>
 
   <div class="mobile-menu">
-    <span class="mobile-menu-close" onclick="var m=document.querySelector('.mobile-menu');if(m)m.classList.remove('open')">關閉</span>
+    <span class="mobile-menu-close">關閉</span>
     <a href="/index.html">首頁</a>
     <a href="/chapters/lakecity/01.html">湖城記事</a>
     <a href="/chapters/name/01.html">名字</a>
@@ -53,11 +53,35 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     var existing = document.querySelector('.site-header');
-    var mobileMenu = document.querySelector('.mobile-menu');
+    var existingMenu = document.querySelector('.mobile-menu');
     var temp = document.createElement('div');
-    temp.innerHTML = nav;
-    if (existing) existing.replaceWith(temp.children[0]);
-    if (mobileMenu) mobileMenu.replaceWith(temp.children[0]);
-    else document.body.insertBefore(temp.children[0], document.body.firstChild);
+    temp.innerHTML = nav.trim();
+
+    var newHeader = temp.querySelector('.site-header');
+    var newMenu = temp.querySelector('.mobile-menu');
+
+    if (existing) {
+      existing.replaceWith(newHeader);
+    } else {
+      document.body.insertBefore(newHeader, document.body.firstChild);
+    }
+
+    if (existingMenu) {
+      existingMenu.replaceWith(newMenu);
+    } else {
+      newHeader.after(newMenu);
+    }
+
+    var hamburger = document.querySelector('.hamburger');
+    var closeBtn = document.querySelector('.mobile-menu-close');
+    var menu = document.querySelector('.mobile-menu');
+
+    if (hamburger) hamburger.addEventListener('click', function() {
+      if (menu) menu.classList.add('open');
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', function() {
+      if (menu) menu.classList.remove('open');
+    });
   });
 })();
