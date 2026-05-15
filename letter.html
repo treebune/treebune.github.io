@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>寫信 — 寫在掌心的領悟</title>
+  <meta name="description" content="寫一封信給 Sami。">
+  <link rel="stylesheet" href="/css/style.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DBTLEKLXEG"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-DBTLEKLXEG');</script>
+  <style>
+    .letter-wrap {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 3rem 2.5rem 4rem;
+    }
+    .letter-label {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 2.5rem;
+    }
+    .letter-to {
+      margin-bottom: 1.5rem;
+    }
+    .letter-to-label {
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+    }
+    .letter-to-name {
+      font-size: 15px;
+      margin-left: 0.75rem;
+      color: var(--text-primary);
+      letter-spacing: 0.05em;
+    }
+    .letter-divider {
+      width: 100%;
+      height: 0.5px;
+      background: var(--border);
+      margin-bottom: 2rem;
+    }
+    .letter-body {
+      min-height: 280px;
+      font-size: 17px;
+      line-height: 2.1;
+      color: var(--text-primary);
+      outline: none;
+      letter-spacing: 0.03em;
+      font-family: var(--serif);
+      cursor: text;
+    }
+    .letter-body.placeholder {
+      color: var(--text-faint);
+      font-style: italic;
+    }
+    .letter-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+      padding-top: 2rem;
+      border-top: 0.5px solid var(--border);
+    }
+    .letter-hint {
+      font-size: 11px;
+      font-style: italic;
+      color: var(--text-faint);
+    }
+    .letter-sent {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+    .letter-send-btn {
+      font-family: var(--serif);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: transparent;
+      border: 0.5px solid var(--border);
+      padding: 0.5rem 1.25rem;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .letter-send-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+    }
+    .letter-send-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <p class="site-eyebrow">Sami 純人工</p>
+      <h1 class="site-name"><a href="/index.html">寫在掌心的領悟</a></h1>
+      <p class="site-tagline"><a href="/about.html" class="tagline-link">我正孤獨通過自己行星的曠野</a></p>
+      <nav class="site-nav">
+        <div class="nav-item">
+          故事 <span class="nav-arrow">▾</span>
+          <div class="dropdown">
+            <div class="dropdown-inner">
+              <a class="dropdown-item" href="/chapters/lakecity/01.html">湖城記事</a>
+              <a class="dropdown-item" href="/chapters/name/01.html">名字</a>
+              <a class="dropdown-item" href="/chapters/story/01.html">故事之城</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/chapters/yanran/01.html">炎涼記</a>
+              <a class="dropdown-item" href="/chapters/baitai/01.html">百態記</a>
+              <a class="dropdown-item" href="/chapters/limu/01.html">黎小木上學記</a>
+              <a class="dropdown-item" href="/chapters/hudi/01.html">惠帝列傳</a>
+              <a class="dropdown-item" href="/chapters/traveler/01.html">旅行者回憶錄</a>
+              <a class="dropdown-item" href="/chapters/animals/01.html">動物食堂</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/chapters/suosui/01.html" style="font-style:italic;color:#9a9890;">瑣碎集</a>
+            </div>
+          </div>
+        </div>
+        <a class="nav-item" href="/about.html">關於</a>
+        <a class="nav-item" href="/letter.html">寫信</a>
+      </nav>
+      <div class="hamburger" onclick="document.querySelector('.mobile-menu').classList.add('open')">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu">
+    <span class="mobile-menu-close" onclick="document.querySelector('.mobile-menu').classList.remove('open')">關閉</span>
+    <a href="/index.html">首頁</a>
+    <a href="/chapters/lakecity/01.html">湖城記事</a>
+    <a href="/chapters/name/01.html">名字</a>
+    <a href="/chapters/story/01.html">故事之城</a>
+    <a href="/chapters/yanran/01.html">炎涼記</a>
+    <a href="/chapters/baitai/01.html">百態記</a>
+    <a href="/chapters/limu/01.html">黎小木上學記</a>
+    <a href="/chapters/hudi/01.html">惠帝列傳</a>
+    <a href="/chapters/traveler/01.html">旅行者回憶錄</a>
+    <a href="/chapters/animals/01.html">動物食堂</a>
+    <a href="/chapters/suosui/01.html">瑣碎集</a>
+    <a href="/about.html">關於</a>
+    <a href="/letter.html">寫信</a>
+  </div>
+
+  <main>
+    <div class="letter-wrap">
+      <p class="letter-label">寫信</p>
+      <div class="letter-to">
+        <span class="letter-to-label">致</span>
+        <span class="letter-to-name">Sami</span>
+      </div>
+      <div class="letter-divider"></div>
+      <div class="letter-body placeholder" id="letter-body" contenteditable="true">在這裡寫下你想說的話⋯⋯</div>
+      <div class="letter-footer">
+        <span class="letter-hint" id="letter-hint">寫好了就送出，或者不送也沒關係。</span>
+        <button class="letter-send-btn" id="send-btn">送出</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-text">2005 — 2026 純人工書寫</p>
+    </div>
+  </footer>
+
+  <script>
+    var body = document.getElementById('letter-body');
+    var btn = document.getElementById('send-btn');
+    var hint = document.getElementById('letter-hint');
+
+    body.addEventListener('focus', function() {
+      if (body.classList.contains('placeholder')) {
+        body.innerHTML = '';
+        body.classList.remove('placeholder');
+      }
+    });
+
+    body.addEventListener('blur', function() {
+      if (!body.innerText.trim()) {
+        body.innerHTML = '在這裡寫下你想說的話⋯⋯';
+        body.classList.add('placeholder');
+      }
+    });
+
+    btn.addEventListener('click', function() {
+      var text = body.innerText.trim();
+      if (body.classList.contains('placeholder') || text.length < 10) return;
+      window.location.href = 'mailto:treebune@gmail.com?subject=來自讀者的信&body=' + encodeURIComponent(text);
+      btn.disabled = true;
+      hint.style.display = 'none';
+      var sent = document.createElement('span');
+      sent.className = 'letter-sent';
+      sent.innerText = '信送出去了。';
+      btn.parentNode.insertBefore(sent, btn);
+    });
+  </script>
+</body>
+</html>
