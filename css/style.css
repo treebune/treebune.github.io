@@ -119,7 +119,7 @@ a { color: inherit; text-decoration: none; }
 .book {
   position: relative;
   flex-shrink: 0;
-  animation: bookFadeIn 0.8s ease forwards;
+  /*animation: bookFadeIn 0.8s ease forwards; */
   opacity: 0;
   transform-origin: bottom center;
   cursor: pointer;
