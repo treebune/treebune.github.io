@@ -28,14 +28,14 @@
         <a class="nav-item" href="/about.html">關於</a>
         <a class="nav-item" href="/letter.html">寫信</a>
       </nav>
-      <div class="hamburger" onclick="document.querySelector('.mobile-menu').classList.add('open')">
+      <div class="hamburger" onclick="var m=document.querySelector('.mobile-menu');if(m)m.classList.add('open')">
         <span></span><span></span><span></span>
       </div>
     </div>
   </header>
 
   <div class="mobile-menu">
-    <span class="mobile-menu-close" onclick="document.querySelector('.mobile-menu').classList.remove('open')">關閉</span>
+    <span class="mobile-menu-close" onclick="var m=document.querySelector('.mobile-menu');if(m)m.classList.remove('open')">關閉</span>
     <a href="/index.html">首頁</a>
     <a href="/chapters/lakecity/01.html">湖城記事</a>
     <a href="/chapters/name/01.html">名字</a>
