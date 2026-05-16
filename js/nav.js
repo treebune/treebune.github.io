@@ -37,6 +37,13 @@
     bindEvents();
   }
 
+  if (!document.querySelector('meta[property="og:image"]')) {
+  var meta = document.createElement('meta');
+  meta.setAttribute('property', 'og:image');
+  meta.setAttribute('content', 'https://www.treebune.cc/images/og.png');
+  document.head.appendChild(meta);
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', injectNav);
   } else {
