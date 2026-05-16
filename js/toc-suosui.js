@@ -1,7 +1,7 @@
 var SERIES_SUOSUI = {
   "key": "suosui",
   "name": "瑣碎集",
-  "total": 73,
+  "total": 74,
   "chapters": [
     {
       "num": 1,
@@ -367,6 +367,11 @@ var SERIES_SUOSUI = {
       "num": 73,
       "title": "意指意符，意在言外",
       "file": "73.html"
+    },
+    {
+      "num": 74,
+      "title": "在人間工作的人",
+      "file": "74.html"
     }
   ]
 };
