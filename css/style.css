@@ -433,8 +433,8 @@ a { color: inherit; text-decoration: none; }
 .stories-main-desc { font-size: 14px; font-style: italic; color: var(--text-muted); line-height: 1.85; max-width: 480px; margin-bottom: 0.75rem; }
 .stories-main-cta { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-faint); }
 .stories-divider { width: 36px; height: 0.5px; background: var(--border); margin-bottom: 1.75rem; }
-.stories-sides { display: flex; gap: 4rem; flex-wrap: wrap; }
-.story-side { flex: 1; min-width: 200px; }
+.stories-sides { display: flex; gap: 4rem; }
+.story-side { display: block; color: inherit; }
 .story-side-series { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.3rem; }
 .story-side-title { font-size: 16px; font-weight: 400; margin-bottom: 0.2rem; transition: color 0.15s; }
 .story-side:hover .story-side-title { color: var(--text-muted); }
