@@ -23,26 +23,14 @@
     .letter-body { min-height: 280px; font-size: 17px; line-height: 2.1; color: var(--text-primary); outline: none; letter-spacing: 0.03em; font-family: var(--serif); cursor: text; }
     .letter-body.placeholder { color: var(--text-faint); font-style: italic; }
     .letter-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
-    .letter-hint { font-size: 11px; font-style: italic; color: var(--text-faint); transition: color 0.15s; }
+    .letter-hint { font-size: 11px; font-style: italic; color: var(--text-faint); }
     .letter-sent { font-size: 14px; font-style: italic; color: var(--text-muted); letter-spacing: 0.05em; }
     .letter-send-btn { font-family: var(--serif); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); background: transparent; border: 0.5px solid var(--border); padding: 0.5rem 1.25rem; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
     .letter-send-btn:hover { color: var(--text-primary); border-color: var(--text-muted); }
     .letter-send-btn:disabled { opacity: 0.35; cursor: default; }
-    #hidden-iframe { display: none; }
   </style>
 </head>
 <body>
-  <iframe id="hidden-iframe" name="hidden-iframe"></iframe>
-
-  <form
-    id="letter-form"
-    action="https://docs.google.com/forms/d/e/1FAIpQLSc0Jm8nRGV3udySGVr3kAqqvtNdJa8dffwfExnyupIoY388rg/formResponse"
-    method="POST"
-    target="hidden-iframe"
-    style="display:none;">
-    <input type="hidden" name="entry.1935091998" id="form-content">
-  </form>
-
   <main>
     <div class="letter-wrap">
       <p class="letter-label">寫信</p>
@@ -54,11 +42,7 @@
 
       <div class="letter-field">
         <label>來自</label>
-<<<<<<< HEAD
         <input type="email" id="letter-email" placeholder="您的信箱">
-=======
-        <input type="email" id="letter-email" placeholder="email address">
->>>>>>> e76c610d78f286a4c322af02add57d919470ae57
       </div>
 
       <div class="letter-body placeholder" id="letter-body" contenteditable="true">在這裡寫下你想說的話⋯⋯</div>
@@ -77,8 +61,25 @@
   </footer>
 
   <script>
+    var body = document.getElementById('letter-body');
+    var btn = document.getElementById('send-btn');
+    var hint = document.getElementById('letter-hint');
+
+    body.addEventListener('focus', function() {
+      if (body.classList.contains('placeholder')) {
+        body.innerHTML = '';
+        body.classList.remove('placeholder');
+      }
+    });
+
+    body.addEventListener('blur', function() {
+      if (!body.innerText.trim()) {
+        body.innerHTML = '在這裡寫下你想說的話⋯⋯';
+        body.classList.add('placeholder');
+      }
+    });
+
     btn.addEventListener('click', function() {
-<<<<<<< HEAD
       var text = body.innerText.trim();
       var email = document.getElementById('letter-email').value.trim();
 
@@ -87,57 +88,31 @@
         return;
       }
 
-      var content = email ? '[' + email + ']\n\n' + text : text;
-      document.getElementById('form-content').value = content;
-      document.getElementById('letter-form').submit();
-
       btn.disabled = true;
-      hint.style.display = 'none';
-      var sent = document.createElement('span');
-      sent.className = 'letter-sent';
-      sent.innerText = '信送出去了。';
-      btn.parentNode.insertBefore(sent, btn);
-      btn.style.display = 'none';
+
+      fetch('https://formspree.io/f/xvzleloo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, message: text })
+      })
+      .then(function(res) {
+        if (res.ok) {
+          hint.style.display = 'none';
+          var sent = document.createElement('span');
+          sent.className = 'letter-sent';
+          sent.innerText = '信送出去了。';
+          btn.parentNode.insertBefore(sent, btn);
+          btn.style.display = 'none';
+        } else {
+          hint.textContent = '送出失敗，請稍後再試。';
+          btn.disabled = false;
+        }
+      })
+      .catch(function() {
+        hint.textContent = '送出失敗，請稍後再試。';
+        btn.disabled = false;
+      });
     });
-=======
-  var text = body.innerText.trim();
-  var email = document.getElementById('letter-email').value.trim();
-  if (body.classList.contains('placeholder') || text.length < 10) {
-    hint.textContent = '再多說一點？';
-    return;
-  }
-
-  var formId = '1FAIpQLSc0Jm8nRGV3udySGVr3kAqqvtNdJa8dffwfExnyupIoY388rg';
-  var entryId = 'entry.1935091998';
-  var content = (email ? '[' + email + ']\n\n' : '') + text;
-
-  var form = document.createElement('form');
-  form.method = 'POST';
-  form.action = 'https://docs.google.com/forms/d/e/' + formId + '/formResponse';
-  form.target = 'hidden-iframe';
-
-  var input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = entryId;
-  input.value = content;
-  form.appendChild(input);
-
-  var iframe = document.createElement('iframe');
-  iframe.name = 'hidden-iframe';
-  iframe.style.display = 'none';
-  document.body.appendChild(iframe);
-  document.body.appendChild(form);
-  form.submit();
-
-  btn.disabled = true;
-  hint.style.display = 'none';
-  var sent = document.createElement('span');
-  sent.className = 'letter-sent';
-  sent.innerText = '信送出去了。';
-  btn.parentNode.insertBefore(sent, btn);
-  btn.style.display = 'none';
-});
->>>>>>> e76c610d78f286a4c322af02add57d919470ae57
   </script>
 </body>
 </html>
