@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">系列 — 寫在掌心的領悟</title>
+<meta name="description" id="page-desc" content="">
+<link rel="stylesheet" href="/css/style.css">
+<script src="/js/nav.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DBTLEKLXEG"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-DBTLEKLXEG');</script>
+<style>
+.series-wrap { max-width: var(--max-w); margin: 0 auto; padding: 3rem 2.5rem; }
+.series-eyebrow { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.75rem; }
+.series-title { font-size: 32px; font-weight: 400; line-height: 1.2; margin-bottom: 0.6rem; }
+.series-desc { font-size: 14px; font-style: italic; color: var(--text-muted); line-height: 1.85; max-width: 420px; margin-bottom: 1.25rem; }
+.series-count { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-faint); }
+.series-divider { width: 36px; height: 0.5px; background: var(--border); margin: 1.75rem 0; }
+.series-list { list-style: none; }
+.series-item a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.85rem 0;
+  border-bottom: 0.5px solid var(--border);
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.series-item a:hover { opacity: 0.55; }
+.series-item-title { font-size: 15px; color: var(--text-primary); font-family: var(--serif); }
+.series-item-num { font-size: 10px; letter-spacing: 0.1em; color: var(--text-faint); }
+.series-item:last-child a { border-bottom: none; }
+.series-back { display: inline-block; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-faint); margin-top: 2.5rem; transition: color 0.15s; }
+.series-back:hover { color: var(--text-primary); }
+</style>
+</head>
+<body>
+<main>
+  <div class="series-wrap">
+    <p class="series-eyebrow">系列</p>
+    <h1 class="series-title" id="series-title">載入中</h1>
+    <p class="series-count" id="series-count"></p>
+    <div class="series-divider"></div>
+    <ul class="series-list" id="series-list"></ul>
+    <a href="/index.html" class="series-back">← 回書架</a>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <p class="footer-text">2005 — 2026 純人工書寫</p>
+  </div>
+</footer>
+<script>
+var params = new URLSearchParams(window.location.search);
+var key = params.get('s');
+if (!key) { window.location.href = '/index.html'; }
+
+var script = document.createElement('script');
+script.src = '/js/toc-' + key + '.js';
+script.onload = function() {
+  var varName = 'SERIES_' + key.toUpperCase();
+  var data = window[varName];
+  if (!data) { window.location.href = '/index.html'; return; }
+
+  document.getElementById('page-title').textContent = data.name + ' — 寫在掌心的領悟';
+  document.getElementById('series-title').textContent = data.name;
+  document.getElementById('series-count').textContent = '共 ' + data.total + ' 篇';
+
+  var list = document.getElementById('series-list');
+  data.chapters.forEach(function(ch) {
+    var li = document.createElement('li');
+    li.className = 'series-item';
+    var numStr = String(ch.num).padStart(2, '0');
+    li.innerHTML = '<a href="/chapters/' + key + '/' + numStr + '.html">' +
+      '<span class="series-item-title">' + (ch.title || '第' + ch.num + '篇') + '</span>' +
+      '<span class="series-item-num">' + String(ch.num).padStart(2, '0') + '</span>' +
+      '</a>';
+    list.appendChild(li);
+  });
+};
+script.onerror = function() { window.location.href = '/index.html'; };
+document.head.appendChild(script);
+</script>
+</body>
+</html>
