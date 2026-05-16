@@ -82,56 +82,44 @@
   </footer>
 
   <script>
-    var body = document.getElementById('letter-body');
-    var btn = document.getElementById('send-btn');
-    var hint = document.getElementById('letter-hint');
-
-    body.addEventListener('focus', function() {
-      if (body.classList.contains('placeholder')) {
-        body.innerHTML = '';
-        body.classList.remove('placeholder');
-      }
-    });
-
-    body.addEventListener('blur', function() {
-      if (!body.innerText.trim()) {
-        body.innerHTML = '在這裡寫下你想說的話⋯⋯';
-        body.classList.add('placeholder');
-      }
-    });
-
     btn.addEventListener('click', function() {
-      var text = body.innerText.trim();
-      var email = document.getElementById('letter-email').value.trim();
-      if (body.classList.contains('placeholder') || text.length < 10) return;
+  var text = body.innerText.trim();
+  var email = document.getElementById('letter-email').value.trim();
+  if (body.classList.contains('placeholder') || text.length < 10) {
+    hint.textContent = '再多說一點？';
+    return;
+  }
 
-      var formId = '1FAIpQLSc0Jm8nRGV3udySGVr3kAqqvtNdJa8dffwfExnyupIoY388rg';
-      var entryId = 'entry.1935091998';
-      var url = 'https://docs.google.com/forms/d/e/' + formId + '/formResponse';
+  var formId = '1FAIpQLSc0Jm8nRGV3udySGVr3kAqqvtNdJa8dffwfExnyupIoY388rg';
+  var entryId = 'entry.1935091998';
+  var content = (email ? '[' + email + ']\n\n' : '') + text;
 
-      var data = new FormData();
-      data.append(entryId, (email ? '[' + email + ']\n\n' : '') + text);
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = 'https://docs.google.com/forms/d/e/' + formId + '/formResponse';
+  form.target = 'hidden-iframe';
 
-      fetch(url, { method: 'POST', body: data, mode: 'no-cors' })
-        .then(function() {
-          btn.disabled = true;
-          hint.style.display = 'none';
-          var sent = document.createElement('span');
-          sent.className = 'letter-sent';
-          sent.innerText = '信送出去了。';
-          btn.parentNode.insertBefore(sent, btn);
-          btn.style.display = 'none';
-        })
-        .catch(function() {
-          btn.disabled = true;
-          hint.style.display = 'none';
-          var sent = document.createElement('span');
-          sent.className = 'letter-sent';
-          sent.innerText = '信送出去了。';
-          btn.parentNode.insertBefore(sent, btn);
-          btn.style.display = 'none';
-        });
-    });
+  var input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = entryId;
+  input.value = content;
+  form.appendChild(input);
+
+  var iframe = document.createElement('iframe');
+  iframe.name = 'hidden-iframe';
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+  document.body.appendChild(form);
+  form.submit();
+
+  btn.disabled = true;
+  hint.style.display = 'none';
+  var sent = document.createElement('span');
+  sent.className = 'letter-sent';
+  sent.innerText = '信送出去了。';
+  btn.parentNode.insertBefore(sent, btn);
+  btn.style.display = 'none';
+});
   </script>
 </body>
 </html>
