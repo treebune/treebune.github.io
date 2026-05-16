@@ -407,7 +407,7 @@ a { color: inherit; text-decoration: none; }
 
 .hourglass-area:hover canvas {
   transform: scale(1.04);
-  filter: drop-shadow(0 0 18px rgba(210, 190, 150, 0.35));
+  filter: drop-shadow(0 0 24px rgba(210, 185, 140, 0.55)) drop-shadow(0 0 8px rgba(240, 220, 170, 0.4));
 }
 
 .shelf-hint {
