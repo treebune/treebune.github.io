@@ -434,7 +434,7 @@ a { color: inherit; text-decoration: none; }
 .stories-main-cta { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-faint); }
 .stories-divider { width: 36px; height: 0.5px; background: var(--border); margin-bottom: 1.75rem; }
 .stories-sides { display: flex; gap: 4rem; }
-.story-side { display: block; color: inherit; max-width: 230px; }
+.story-side { display: block; color: inherit; max-width: 200px; }
 .story-side-series { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.3rem; }
 .story-side-title { font-size: 16px; font-weight: 400; margin-bottom: 0.2rem; transition: color 0.15s; }
 .story-side:hover .story-side-title { color: var(--text-muted); }
