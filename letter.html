@@ -6,41 +6,32 @@
   <title>寫信 — 寫在掌心的領悟</title>
   <meta name="description" content="寫一封信給 Sami。">
   <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/nav.js"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-DBTLEKLXEG"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-DBTLEKLXEG');</script>
   <style>
-    .letter-wrap {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 3rem 2.5rem 4rem;
-    }
-    .letter-label {
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--text-faint);
-      margin-bottom: 2.5rem;
-    }
-    .letter-to {
-      margin-bottom: 1.5rem;
-    }
-    .letter-to-label {
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      color: var(--text-faint);
-    }
-    .letter-to-name {
-      font-size: 15px;
-      margin-left: 0.75rem;
-      color: var(--text-primary);
-      letter-spacing: 0.05em;
-    }
-    .letter-divider {
+    .letter-wrap { max-width: 600px; margin: 0 auto; padding: 3rem 2.5rem 4rem; }
+    .letter-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 2.5rem; }
+    .letter-to { margin-bottom: 1.5rem; }
+    .letter-to-label { font-size: 12px; letter-spacing: 0.1em; color: var(--text-faint); }
+    .letter-to-name { font-size: 15px; margin-left: 0.75rem; color: var(--text-primary); letter-spacing: 0.05em; }
+    .letter-divider { width: 100%; height: 0.5px; background: var(--border); margin-bottom: 2rem; }
+    .letter-field { margin-bottom: 1.25rem; }
+    .letter-field label { display: block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.5rem; }
+    .letter-field input {
       width: 100%;
-      height: 0.5px;
-      background: var(--border);
-      margin-bottom: 2rem;
+      background: transparent;
+      border: none;
+      border-bottom: 0.5px solid var(--border);
+      color: var(--text-primary);
+      font-family: var(--serif);
+      font-size: 14px;
+      padding: 0.35rem 0;
+      outline: none;
+      transition: border-color 0.15s;
+      letter-spacing: 0.03em;
     }
+    .letter-field input:focus { border-bottom-color: var(--text-muted); }
     .letter-body {
       min-height: 280px;
       font-size: 17px;
@@ -51,54 +42,16 @@
       font-family: var(--serif);
       cursor: text;
     }
-    .letter-body.placeholder {
-      color: var(--text-faint);
-      font-style: italic;
-    }
-    .letter-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 1.5rem;
-      padding-top: 2rem;
-      border-top: 0.5px solid var(--border);
-    }
-    .letter-hint {
-      font-size: 11px;
-      font-style: italic;
-      color: var(--text-faint);
-    }
-    .letter-sent {
-      font-size: 14px;
-      font-style: italic;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-    }
-    .letter-send-btn {
-      font-family: var(--serif);
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      background: transparent;
-      border: 0.5px solid var(--border);
-      padding: 0.5rem 1.25rem;
-      cursor: pointer;
-      transition: color 0.15s, border-color 0.15s;
-    }
-    .letter-send-btn:hover {
-      color: var(--text-primary);
-      border-color: var(--text-muted);
-    }
-    .letter-send-btn:disabled {
-      opacity: 0.35;
-      cursor: default;
-    }
+    .letter-body.placeholder { color: var(--text-faint); font-style: italic; }
+    .letter-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 2rem; border-top: 0.5px solid var(--border); }
+    .letter-hint { font-size: 11px; font-style: italic; color: var(--text-faint); }
+    .letter-sent { font-size: 14px; font-style: italic; color: var(--text-muted); letter-spacing: 0.05em; }
+    .letter-send-btn { font-family: var(--serif); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); background: transparent; border: 0.5px solid var(--border); padding: 0.5rem 1.25rem; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
+    .letter-send-btn:hover { color: var(--text-primary); border-color: var(--text-muted); }
+    .letter-send-btn:disabled { opacity: 0.35; cursor: default; }
   </style>
 </head>
 <body>
-  <script src="/js/nav.js"></script>
-
   <main>
     <div class="letter-wrap">
       <p class="letter-label">寫信</p>
@@ -107,7 +60,14 @@
         <span class="letter-to-name">Sami</span>
       </div>
       <div class="letter-divider"></div>
+
+      <div class="letter-field">
+        <label>你的 Email</label>
+        <input type="email" id="letter-email" placeholder="留下信箱，讓你為自己的話負責">
+      </div>
+
       <div class="letter-body placeholder" id="letter-body" contenteditable="true">在這裡寫下你想說的話⋯⋯</div>
+
       <div class="letter-footer">
         <span class="letter-hint" id="letter-hint">寫好了就送出，或者不送也沒關係。</span>
         <button class="letter-send-btn" id="send-btn">送出</button>
@@ -142,14 +102,35 @@
 
     btn.addEventListener('click', function() {
       var text = body.innerText.trim();
+      var email = document.getElementById('letter-email').value.trim();
       if (body.classList.contains('placeholder') || text.length < 10) return;
-      window.location.href = 'mailto:treebune@gmail.com?subject=來自讀者的信&body=' + encodeURIComponent(text);
-      btn.disabled = true;
-      hint.style.display = 'none';
-      var sent = document.createElement('span');
-      sent.className = 'letter-sent';
-      sent.innerText = '信送出去了。';
-      btn.parentNode.insertBefore(sent, btn);
+
+      var formId = '1FAIpQLSc0Jm8nRGV3udySGVr3kAqqvtNdJa8dffwfExnyupIoY388rg';
+      var entryId = 'entry.1935091998';
+      var url = 'https://docs.google.com/forms/d/e/' + formId + '/formResponse';
+
+      var data = new FormData();
+      data.append(entryId, (email ? '[' + email + ']\n\n' : '') + text);
+
+      fetch(url, { method: 'POST', body: data, mode: 'no-cors' })
+        .then(function() {
+          btn.disabled = true;
+          hint.style.display = 'none';
+          var sent = document.createElement('span');
+          sent.className = 'letter-sent';
+          sent.innerText = '信送出去了。';
+          btn.parentNode.insertBefore(sent, btn);
+          btn.style.display = 'none';
+        })
+        .catch(function() {
+          btn.disabled = true;
+          hint.style.display = 'none';
+          var sent = document.createElement('span');
+          sent.className = 'letter-sent';
+          sent.innerText = '信送出去了。';
+          btn.parentNode.insertBefore(sent, btn);
+          btn.style.display = 'none';
+        });
     });
   </script>
 </body>
