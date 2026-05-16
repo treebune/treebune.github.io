@@ -22,7 +22,9 @@
     html += '<p class="progress-label">第 ' + currentNum + ' 篇，共 ' + total + ' 篇</p>';
     html += '<ul class="toc-list">';
 
-    data.chapters.forEach(function(ch) {
+    var chapters = key === 'suosui' ? data.chapters.slice().reverse() : data.chapters;
+
+    chapters.forEach(function(ch) {
       var numStr = String(ch.num).padStart(2, '0');
       var isActive = ch.num === currentNum;
       html += '<li class="toc-item">';
