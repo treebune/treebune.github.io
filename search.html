@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>搜尋 — 寫在掌心的領悟</title>
+  <meta name="description" content="搜尋寫在掌心的領悟的文章">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/nav.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-DBTLEKLXEG"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-DBTLEKLXEG');</script>
+  <style>
+    .search-wrap { max-width: 680px; margin: 0 auto; padding: 3rem 2.5rem 4rem; }
+    .search-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 2rem; display: block; }
+    .search-input-wrap { position: relative; margin-bottom: 2.5rem; }
+    .search-input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 0.5px solid var(--border);
+      color: var(--text-primary);
+      font-family: var(--serif);
+      font-size: 20px;
+      padding: 0.5rem 0;
+      outline: none;
+      letter-spacing: 0.03em;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus { border-bottom-color: var(--text-muted); }
+    .search-input::placeholder { color: var(--text-faint); font-style: italic; }
+    .search-results { list-style: none; }
+    .search-result {
+      padding: 1.25rem 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .search-result:last-child { border-bottom: none; }
+    .search-result a { display: block; color: inherit; text-decoration: none; transition: opacity 0.15s; }
+    .search-result a:hover { opacity: 0.6; }
+    .result-series { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 0.3rem; }
+    .result-title { font-size: 18px; font-family: var(--serif); color: var(--text-primary); margin-bottom: 0.4rem; font-weight: 400; }
+    .result-excerpt { font-size: 13px; font-style: italic; color: var(--text-muted); line-height: 1.7; }
+    .result-excerpt mark { background: none; color: var(--text-primary); font-style: normal; border-bottom: 0.5px solid var(--border); }
+    .search-empty { font-size: 13px; font-style: italic; color: var(--text-faint); padding: 2rem 0; }
+    .search-count { font-size: 11px; color: var(--text-faint); letter-spacing: 0.1em; margin-bottom: 1.5rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="search-wrap">
+      <span class="search-label">搜尋</span>
+      <div class="search-input-wrap">
+        <input type="text" class="search-input" id="search-input" placeholder="輸入關鍵字⋯⋯" autofocus>
+      </div>
+      <p class="search-count" id="search-count"></p>
+      <ul class="search-results" id="search-results"></ul>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-text">2005 — 2026 純人工書寫</p>
+    </div>
+  </footer>
+
+  <link href="/pagefind/pagefind-ui.css" rel="stylesheet">
+  <script src="/pagefind/pagefind.js" type="module"></script>
+  <script type="module">
+    import pagefind from '/pagefind/pagefind.js';
+
+    await pagefind.init();
+
+    const input = document.getElementById('search-input');
+    const results = document.getElementById('search-results');
+    const count = document.getElementById('search-count');
+
+    let timer;
+    input.addEventListener('input', function() {
+      clearTimeout(timer);
+      timer = setTimeout(async function() {
+        const q = input.value.trim();
+        if (!q) {
+          results.innerHTML = '';
+          count.textContent = '';
+          return;
+        }
+        const search = await pagefind.search(q);
+        const data = await Promise.all(search.results.slice(0, 20).map(r => r.data()));
+
+        count.textContent = search.results.length + ' 筆結果';
+        results.innerHTML = '';
+
+        if (!data.length) {
+          results.innerHTML = '<li class="search-empty">找不到相關內容。</li>';
+          return;
+        }
+
+        data.forEach(function(d) {
+          const url = d.url;
+          const title = d.meta.title || '';
+          const excerpt = d.excerpt || '';
+
+          // 從 URL 推斷系列名
+          const m = url.match(/\/chapters\/([^/]+)\//);
+          const seriesMap = {
+            lakecity:'湖城記事', name:'名字', story:'故事之城',
+            yanran:'炎涼記', baitai:'百態記', limu:'黎小木上學記',
+            hudi:'惠帝列傳', traveler:'旅行者回憶錄', animals:'動物食堂', suosui:'瑣碎集'
+          };
+          const seriesLabel = m ? (seriesMap[m[1]] || '') : '';
+
+          const li = document.createElement('li');
+          li.className = 'search-result';
+          li.innerHTML = '<a href="' + url + '">' +
+            (seriesLabel ? '<p class="result-series">' + seriesLabel + '</p>' : '') +
+            '<p class="result-title">' + title + '</p>' +
+            '<p class="result-excerpt">' + excerpt + '</p>' +
+            '</a>';
+          results.appendChild(li);
+        });
+      }, 300);
+    });
+
+    // 支援 URL 參數 ?q=xxx
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    if (q) {
+      input.value = q;
+      input.dispatchEvent(new Event('input'));
+    }
+  </script>
+</body>
+</html>
