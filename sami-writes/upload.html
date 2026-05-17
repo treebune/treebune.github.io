@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>上稿機 — treebune</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f8f5ef; --bg-alt: #f2ede6; --border: #c8c4ba;
+  --text: #1a1a18; --muted: #6a6a68; --faint: #9a9a98;
+  --serif: "Hiragino Mincho ProN","Noto Serif TC",Georgia,serif;
+  --sans: -apple-system,BlinkMacSystemFont,sans-serif;
+  --accent: #7a8e9c;
+}
+body { background:var(--bg); color:var(--text); font-family:var(--sans); font-size:14px; line-height:1.6; min-height:100vh; }
+.app { display:grid; grid-template-columns:300px 1fr; min-height:100vh; }
+.sidebar { background:var(--bg-alt); border-right:0.5px solid var(--border); padding:1.5rem; display:flex; flex-direction:column; gap:1.25rem; overflow-y:auto; }
+.sidebar-title { font-family:var(--serif); font-size:15px; font-weight:400; letter-spacing:0.05em; }
+.section-label { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--faint); margin-bottom:0.6rem; display:block; }
+.field { margin-bottom:0.75rem; }
+.field label { display:block; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--faint); margin-bottom:0.35rem; }
+.field select, .field input, .field textarea { width:100%; background:var(--bg); border:0.5px solid var(--border); color:var(--text); font-family:var(--sans); font-size:13px; padding:0.45rem 0.65rem; outline:none; border-radius:2px; transition:border-color 0.15s; }
+.field select:focus, .field input:focus, .field textarea:focus { border-color:var(--accent); }
+.field textarea { resize:vertical; min-height:60px; line-height:1.5; }
+.divider { height:0.5px; background:var(--border); }
+.btn { width:100%; padding:0.6rem; font-family:var(--sans); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; cursor:pointer; border-radius:2px; transition:all 0.15s; }
+.btn-primary { background:var(--text); color:var(--bg); border:none; }
+.btn-primary:hover { opacity:0.82; }
+.btn-secondary { background:transparent; color:var(--muted); border:0.5px solid var(--border); margin-top:0.5rem; }
+.btn-secondary:hover { border-color:var(--muted); color:var(--text); }
+.btn-publish { background:#7a8e9c; color:#fff; border:none; margin-top:0.5rem; }
+.btn-publish:hover { opacity:0.88; }
+.btn-publish:disabled { opacity:0.4; cursor:default; }
+.status { font-size:11px; color:var(--faint); font-style:italic; text-align:center; min-height:1.4em; }
+.status.error { color:#9a5a5a; }
+.status.success { color:#5a8a5a; }
+.main { display:flex; flex-direction:column; }
+.toolbar { border-bottom:0.5px solid var(--border); padding:0.65rem 1.5rem; display:flex; gap:0.4rem; flex-wrap:wrap; align-items:center; background:var(--bg); position:sticky; top:0; z-index:10; }
+.tool-btn { padding:0.3rem 0.65rem; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; background:transparent; border:0.5px solid var(--border); color:var(--muted); border-radius:2px; transition:all 0.12s; white-space:nowrap; }
+.tool-btn:hover { border-color:var(--muted); color:var(--text); }
+.toolbar-sep { width:0.5px; height:18px; background:var(--border); margin:0 0.2rem; }
+.editor-area { flex:1; padding:2rem 2.5rem; overflow-y:auto; max-width:760px; }
+.blocks { display:flex; flex-direction:column; gap:0.75rem; min-height:200px; }
+.empty-state { color:var(--faint); font-style:italic; font-size:13px; text-align:center; padding:3rem 0; }
+.block { position:relative; border:0.5px solid transparent; border-radius:2px; transition:border-color 0.12s; }
+.block:hover { border-color:var(--border); }
+.block-controls { position:absolute; top:0.35rem; right:0.35rem; display:none; gap:0.2rem; z-index:5; }
+.block:hover .block-controls { display:flex; }
+.bctl { padding:0.15rem 0.35rem; font-size:10px; cursor:pointer; background:var(--bg); border:0.5px solid var(--border); color:var(--faint); border-radius:2px; transition:all 0.1s; }
+.bctl:hover { color:var(--text); border-color:var(--muted); }
+.bctl.del:hover { color:#9a5a5a; border-color:#d4b4b4; }
+.block-text { padding:0.65rem; }
+.block-text [contenteditable] { font-family:var(--serif); font-size:16px; line-height:2.1; color:var(--text); outline:none; min-height:1.5em; display:block; }
+.block-heading { padding:0.65rem; }
+.heading-sublabel { font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--faint); margin-bottom:0.35rem; }
+.block-heading [contenteditable] { font-family:var(--serif); font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--faint); outline:none; min-height:1em; display:block; }
+.block-quote { padding:0.65rem 0.65rem 0.65rem 1.2rem; border-left:2px solid var(--border); }
+.block-quote [contenteditable] { font-family:var(--serif); font-size:17px; font-style:italic; line-height:1.85; color:var(--muted); outline:none; min-height:1.5em; display:block; }
+.block-cite { padding:0.65rem 0.65rem 0.65rem 1.2rem; border-left:2px solid var(--border); background:var(--bg-alt); }
+.block-cite .cite-text [contenteditable] { font-family:var(--serif); font-size:15px; font-style:italic; line-height:1.85; color:var(--muted); outline:none; min-height:1.5em; display:block; }
+.block-cite .cite-src { margin-top:0.4rem; }
+.block-cite .cite-src [contenteditable] { font-size:11px; color:var(--faint); outline:none; min-height:1em; display:block; }
+.block-img { padding:0.65rem; }
+.block-img2 { padding:0.65rem; }
+.img-tag { font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--faint); margin-bottom:0.4rem; }
+.img-drop { border:0.5px dashed var(--border); border-radius:2px; padding:1.5rem; text-align:center; cursor:pointer; transition:border-color 0.15s; position:relative; }
+.img-drop:hover { border-color:var(--accent); }
+.img-drop input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.img-drop p { font-size:12px; color:var(--faint); pointer-events:none; }
+.img-preview { display:none; }
+.img-preview img { max-width:100%; border-radius:2px; display:block; }
+.img2-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.img-caption [contenteditable] { font-size:11px; font-style:italic; color:var(--faint); outline:none; min-height:1em; display:block; margin-top:0.4rem; }
+.preview-overlay { display:none; position:fixed; inset:0; background:rgba(248,245,239,0.96); z-index:100; overflow-y:auto; padding:3rem 2rem; }
+.preview-overlay.open { display:block; }
+.preview-close { position:fixed; top:1.5rem; right:1.5rem; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--faint); cursor:pointer; border:0.5px solid var(--border); padding:0.4rem 0.8rem; background:var(--bg); border-radius:2px; }
+.preview-close:hover { color:var(--text); }
+.preview-content { max-width:580px; margin:0 auto; font-family:var(--serif); }
+</style>
+</head>
+<body>
+<div id="gate" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:var(--sans);">
+  <p style="font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--faint);margin-bottom:1.5rem;">驗證身份</p>
+  <input type="password" id="gate-input" placeholder="密碼" style="background:var(--bg);border:0.5px solid var(--border);color:var(--text);font-family:var(--sans);font-size:14px;padding:0.5rem 0.75rem;outline:none;border-radius:2px;width:200px;text-align:center;" onkeydown="if(event.key==='Enter')checkGate()">
+  <p id="gate-error" style="font-size:11px;color:#9a5a5a;margin-top:0.75rem;min-height:1.4em;font-style:italic;"></p>
+  <button onclick="checkGate()" style="margin-top:0.5rem;padding:0.5rem 1.25rem;font-family:var(--sans);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;background:var(--text);color:var(--bg);border:none;border-radius:2px;cursor:pointer;">進入</button>
+</div>
+<div class="app" id="app" style="display:none;">
+  <div class="sidebar">
+    <div class="sidebar-title">上稿機</div>
+    <div>
+      <span class="section-label">文章資訊</span>
+      <div class="field"><label>系列</label>
+        <select id="series">
+          <option value="lakecity">湖城記事</option>
+          <option value="name">名字</option>
+          <option value="story">故事之城</option>
+          <option value="yanran">炎涼記</option>
+          <option value="baitai">百態記</option>
+          <option value="limu">黎小木上學記</option>
+          <option value="hudi">惠帝列傳</option>
+          <option value="traveler">旅行者回憶錄</option>
+          <option value="animals">動物食堂</option>
+          <option value="suosui">瑣碎集</option>
+        </select>
+      </div>
+      <div class="field"><label>章節編號</label><input type="number" id="chap-num" min="1" placeholder="例：17"></div>
+      <div class="field"><label>日期</label><input type="date" id="pub-date"></div>
+      <div class="field"><label>標題</label><input type="text" id="title" placeholder="文章標題"></div>
+      <div class="field"><label>副標題（選填）</label><input type="text" id="subtitle" placeholder="副標題或章節說明"></div>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <span class="section-label">SEO</span>
+      <div class="field"><label>描述</label><textarea id="meta-desc" placeholder="一兩句話描述這篇文章"></textarea></div>
+      <div class="field"><label>og:image 路徑（選填）</label><input type="text" id="og-image" placeholder="/images/og.png"></div>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <span class="section-label">首頁近況（選填）</span>
+      <div class="field"><label>更新近況</label><textarea id="note" placeholder="例：湖城記事第十七章剛寫完。"></textarea></div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;flex-direction:column;gap:0.5rem;">
+      <button class="btn btn-publish" id="publish-btn" onclick="loadTocAndPublish()">發布到網站</button>
+      <button class="btn btn-primary" onclick="generateHTML()">只下載 HTML</button>
+      <button class="btn btn-secondary" onclick="openPreview()">預覽</button>
+      <div class="status" id="status"></div>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <span class="section-label">只更新近況</span>
+      <div class="field"><label>近況內容</label><textarea id="note-only" placeholder="例：最近在寫新篇章。"></textarea></div>
+      <button class="btn btn-secondary" onclick="updateNoteOnly()" style="margin-top:0;">更新近況</button>
+    </div>
+    <div class="divider"></div>
+    <div>
+      <span class="section-label">更新推薦文章</span>
+      <div style="font-size:10px;color:var(--faint);margin-bottom:0.75rem;letter-spacing:0.05em;">主推</div>
+      <div class="field"><label>系列</label><input type="text" id="feat-main-series" placeholder="例：湖城記事"></div>
+      <div class="field"><label>標題</label><input type="text" id="feat-main-title" placeholder="文章標題"></div>
+      <div class="field"><label>描述</label><textarea id="feat-main-desc" placeholder="一兩句話"></textarea></div>
+      <div class="field"><label>連結</label><input type="text" id="feat-main-href" placeholder="/chapters/lakecity/16.html"></div>
+      <div style="font-size:10px;color:var(--faint);margin:0.75rem 0;letter-spacing:0.05em;">副推一</div>
+      <div class="field"><label>系列</label><input type="text" id="feat-side1-series" placeholder="例：瑣碎集"></div>
+      <div class="field"><label>標題</label><input type="text" id="feat-side1-title" placeholder="文章標題"></div>
+      <div class="field"><label>描述</label><input type="text" id="feat-side1-desc" placeholder="一句話"></div>
+      <div class="field"><label>連結</label><input type="text" id="feat-side1-href" placeholder="/chapters/suosui/73.html"></div>
+      <div style="font-size:10px;color:var(--faint);margin:0.75rem 0;letter-spacing:0.05em;">副推二</div>
+      <div class="field"><label>系列</label><input type="text" id="feat-side2-series" placeholder="例：動物食堂"></div>
+      <div class="field"><label>標題</label><input type="text" id="feat-side2-title" placeholder="文章標題"></div>
+      <div class="field"><label>描述</label><input type="text" id="feat-side2-desc" placeholder="一句話"></div>
+      <div class="field"><label>連結</label><input type="text" id="feat-side2-href" placeholder="/chapters/animals/03.html"></div>
+      <button class="btn btn-secondary" onclick="updateFeatured()" style="margin-top:0;">更新推薦文章</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="toolbar">
+      <button class="tool-btn" onclick="addBlock('text')">文字段落</button>
+      <button class="tool-btn" onclick="addBlock('heading')">小標題</button>
+      <button class="tool-btn" onclick="addBlock('quote')">引言</button>
+      <button class="tool-btn" onclick="addBlock('cite')">引用</button>
+      <div class="toolbar-sep"></div>
+      <button class="tool-btn" onclick="addBlock('img')">單張圖</button>
+      <button class="tool-btn" onclick="addBlock('img2')">雙張圖</button>
+      <div class="toolbar-sep"></div>
+      <button class="tool-btn" onclick="formatText('bold')">強調</button>
+      <button class="tool-btn" onclick="insertLink()">超連結</button>
+    </div>
+    <div class="editor-area">
+      <div class="blocks" id="blocks">
+        <div class="empty-state">從上方工具列新增積木開始寫作</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="preview-overlay" id="preview">
+  <div class="preview-close" onclick="closePreview()">關閉預覽</div>
+  <div class="preview-content" id="preview-content"></div>
+</div>
+
+<script>
+var blockCount = 0;
+var imageData = {};
+var SERVER = 'http://localhost:5500';
+
+var SERIES_NAMES = {
+  lakecity:'湖城記事', name:'名字', story:'故事之城',
+  yanran:'炎涼記', baitai:'百態記', limu:'黎小木上學記',
+  hudi:'惠帝列傳', traveler:'旅行者回憶錄', animals:'動物食堂', suosui:'瑣碎集'
+};
+
+document.getElementById('pub-date').value = new Date().toISOString().slice(0,10);
+
+function clearEmpty() {
+  var e = document.querySelector('.empty-state');
+  if (e) e.remove();
+}
+
+function addBlock(type) {
+  clearEmpty();
+  var id = 'block-' + (++blockCount);
+  var el = document.createElement('div');
+  el.className = 'block block-' + type;
+  el.dataset.type = type;
+  el.dataset.id = id;
+  var ctrl = '<div class="block-controls">' +
+    '<button class="bctl" onclick="moveBlock(\'' + id + '\',-1)">↑</button>' +
+    '<button class="bctl" onclick="moveBlock(\'' + id + '\',1)">↓</button>' +
+    '<button class="bctl del" onclick="removeBlock(\'' + id + '\')">刪</button></div>';
+  if (type === 'text') {
+    el.innerHTML = ctrl + '<div contenteditable="true"></div>';
+  } else if (type === 'heading') {
+    el.innerHTML = ctrl + '<div class="heading-sublabel">小標題</div><div contenteditable="true"></div>';
+  } else if (type === 'quote') {
+    el.innerHTML = ctrl + '<div contenteditable="true"></div>';
+  } else if (type === 'cite') {
+    el.innerHTML = ctrl + '<div class="cite-text"><div contenteditable="true"></div></div><div class="cite-src"><div contenteditable="true"></div></div>';
+  } else if (type === 'img') {
+    el.innerHTML = ctrl + '<div class="img-tag">單張圖片</div>' +
+      '<div class="img-drop" id="drop-' + id + '"><input type="file" accept="image/*" onchange="handleImg(this,\'' + id + '\',0)"><p>點擊或拖入圖片</p></div>' +
+      '<div class="img-preview" id="prev-' + id + '-0"><img id="img-' + id + '-0"></div>' +
+      '<div class="img-caption"><div contenteditable="true"></div></div>';
+  } else if (type === 'img2') {
+    el.innerHTML = ctrl + '<div class="img-tag">雙張圖片</div><div class="img2-grid">' +
+      '<div><div class="img-drop" id="drop-' + id + '-a"><input type="file" accept="image/*" onchange="handleImg(this,\'' + id + '\',\'a\')"><p>圖片一</p></div><div class="img-preview" id="prev-' + id + '-a"><img id="img-' + id + '-a"></div></div>' +
+      '<div><div class="img-drop" id="drop-' + id + '-b"><input type="file" accept="image/*" onchange="handleImg(this,\'' + id + '\',\'b\')"><p>圖片二</p></div><div class="img-preview" id="prev-' + id + '-b"><img id="img-' + id + '-b"></div></div>' +
+      '</div><div class="img-caption"><div contenteditable="true"></div></div>';
+  }
+  document.getElementById('blocks').appendChild(el);
+  var ce = el.querySelector('[contenteditable]');
+  if (ce) ce.focus();
+}
+
+function handleImg(input, id, slot) {
+  var file = input.files[0];
+  if (!file) return;
+  if (!imageData[id]) imageData[id] = {};
+  imageData[id][slot] = { file: file, name: file.name };
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    if (!imageData[id]) imageData[id] = {};
+    imageData[id][slot].dataUrl = e.target.result;
+    var imgEl = document.getElementById('img-' + id + '-' + slot);
+    if (imgEl) {
+      imgEl.src = e.target.result;
+      var prev = document.getElementById('prev-' + id + '-' + slot);
+      var dropId = slot === 0 ? 'drop-' + id : 'drop-' + id + '-' + slot;
+      var drop = document.getElementById(dropId);
+      if (prev) prev.style.display = 'block';
+      if (drop) drop.style.display = 'none';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function moveBlock(id, dir) {
+  var el = document.querySelector('[data-id="' + id + '"]');
+  var parent = el.parentNode;
+  if (dir === -1 && el.previousElementSibling) parent.insertBefore(el, el.previousElementSibling);
+  else if (dir === 1 && el.nextElementSibling) parent.insertBefore(el.nextElementSibling, el);
+}
+
+function removeBlock(id) {
+  var el = document.querySelector('[data-id="' + id + '"]');
+  if (el) el.remove();
+  var blocks = document.getElementById('blocks');
+  if (!blocks.children.length) blocks.innerHTML = '<div class="empty-state">從上方工具列新增積木開始寫作</div>';
+}
+
+function formatText(cmd) { if (cmd === 'bold') document.execCommand('bold', false, null); }
+function insertLink() { var url = prompt('輸入連結網址：'); if (url) document.execCommand('createLink', false, url); }
+
+function getBlocks() {
+  var blocks = document.querySelectorAll('.block');
+  var result = [];
+  blocks.forEach(function(b) {
+    var type = b.dataset.type;
+    var obj = { type: type };
+    if (type === 'text' || type === 'quote') {
+      obj.html = b.querySelector('[contenteditable]').innerHTML.trim();
+    } else if (type === 'heading') {
+      obj.text = b.querySelector('[contenteditable]').innerText.trim();
+    } else if (type === 'cite') {
+      obj.text = b.querySelector('.cite-text [contenteditable]').innerHTML.trim();
+      obj.source = b.querySelector('.cite-src [contenteditable]').innerText.trim();
+    } else if (type === 'img') {
+      obj.caption = b.querySelector('.img-caption [contenteditable]').innerText.trim();
+      obj.id = b.dataset.id;
+      obj.slot = 0;
+    } else if (type === 'img2') {
+      obj.caption = b.querySelector('.img-caption [contenteditable]').innerText.trim();
+      obj.id = b.dataset.id;
+    }
+    result.push(obj);
+  });
+  return result;
+}
+
+function buildHTML(series, chapNum, pubDate, title, subtitle, metaDesc, ogImage) {
+  var seriesName = SERIES_NAMES[series];
+  var chapStr = String(chapNum).padStart(2, '0');
+  var prevNum = chapNum > 1 ? String(chapNum - 1).padStart(2, '0') : null;
+  var nextNum = String(chapNum + 1).padStart(2, '0');
+  var blocks = getBlocks();
+
+  var bodyHTML = '';
+  blocks.forEach(function(b) {
+    if (b.type === 'text') bodyHTML += '<p>' + b.html + '</p>\n';
+    else if (b.type === 'heading') bodyHTML += '<p class="chapter-section-title">' + b.text + '</p>\n';
+    else if (b.type === 'quote') bodyHTML += '<blockquote class="chapter-quote">' + b.html + '</blockquote>\n';
+    else if (b.type === 'cite') {
+      bodyHTML += '<blockquote class="about-quote">' + b.text;
+      if (b.source) bodyHTML += '<br><span class="cite-src-text">' + b.source + '</span>';
+      bodyHTML += '</blockquote>\n';
+    } else if (b.type === 'img') {
+      var imgPath = '/images/' + series + '/' + chapStr + '/photo.jpg';
+      bodyHTML += '<div class="chapter-img-full">\n  <img src="' + imgPath + '" alt="">\n';
+      if (b.caption) bodyHTML += '  <p class="chapter-img-caption">' + b.caption + '</p>\n';
+      bodyHTML += '</div>\n';
+    } else if (b.type === 'img2') {
+      var base = '/images/' + series + '/' + chapStr + '/';
+      bodyHTML += '<div class="chapter-img2">\n  <img src="' + base + 'photo-a.jpg" alt="">\n  <img src="' + base + 'photo-b.jpg" alt="">\n';
+      if (b.caption) bodyHTML += '  <p class="chapter-img-caption">' + b.caption + '</p>\n';
+      bodyHTML += '</div>\n';
+    }
+  });
+
+  var html = '<!DOCTYPE html>\n<html lang="zh-Hant">\n<head>\n';
+  html += '<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n';
+  html += '<title>' + title + ' — ' + seriesName + '</title>\n';
+  if (metaDesc) html += '<meta name="description" content="' + metaDesc + '">\n';
+  html += '<meta property="og:title" content="' + title + ' — ' + seriesName + '">\n';
+  if (metaDesc) html += '<meta property="og:description" content="' + metaDesc + '">\n';
+  html += '<meta property="og:type" content="article">\n';
+  html += '<meta property="og:url" content="https://www.treebune.cc/chapters/' + series + '/' + chapStr + '.html">\n';
+  html += '<meta property="og:image" content="https://www.treebune.cc' + (ogImage || '/images/og.png') + '">\n';
+  html += '<link rel="stylesheet" href="/css/style.css">\n';
+  html += '<script src="/js/nav.js"><\/script>\n';
+  html += '<script async src="https://www.googletagmanager.com/gtag/js?id=G-DBTLEKLXEG"><\/script>\n';
+  html += '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag(\'js\',new Date());gtag(\'config\',\'G-DBTLEKLXEG\');<\/script>\n';
+  html += '</head>\n<body>\n\n';
+  html += '<div class="reading-wrap">\n  <main class="reading-main">\n    <div class="chapter-meta">\n';
+  html += '      <p class="chapter-series">' + seriesName + ' · 第' + chapNum + '篇</p>\n';
+  html += '      <h1 class="chapter-title">' + title + '</h1>\n';
+  if (subtitle) html += '      <p class="chapter-sub">' + subtitle + '</p>\n';
+  if (pubDate) html += '      <p class="chapter-date">' + pubDate + '</p>\n';
+  html += '      <div class="chapter-divider"></div>\n    </div>\n    <div class="chapter-body">\n';
+  html += bodyHTML;
+  html += '    </div>\n    <nav class="chapter-nav">\n';
+  var prevTitle = '上一篇';
+  var nextTitle = '下一篇';
+  var tocVar = window['SERIES_' + series.toUpperCase()];
+  if (tocVar && tocVar.chapters) {
+    var chapMap = {};
+    tocVar.chapters.forEach(function(c) { chapMap[c.num] = c.title || ''; });
+    if (chapMap[chapNum - 1]) prevTitle = chapMap[chapNum - 1];
+  }
+  if (prevNum) html += '      <a href="/chapters/' + series + '/' + prevNum + '.html">← ' + prevTitle + '</a>\n';
+  else html += '      <span></span>\n';
+  html += '      <a href="/chapters/' + series + '/' + nextNum + '.html">' + nextTitle + ' →</a>\n';
+  html += '    </nav>\n  </main>\n  <aside class="reading-sidebar">\n';
+  html += '    <p class="section-label">' + seriesName + '</p>\n';
+  html += '    <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>\n';
+  html += '    <p class="progress-label">第 ' + chapNum + ' 篇</p>\n';
+  html += '  </aside>\n</div>\n\n';
+  html += '<script src="/js/toc.js"><\/script>\n</body>\n</html>';
+  return html;
+}
+
+function getImagePayload() {
+  var images = {};
+  Object.keys(imageData).forEach(function(blockId) {
+    var slots = imageData[blockId];
+    Object.keys(slots).forEach(function(slot) {
+      var info = slots[slot];
+      if (!info.dataUrl) return;
+      var filename = slot === 0 ? 'photo.jpg' : (slot === 'a' ? 'photo-a.jpg' : 'photo-b.jpg');
+      images[filename] = info.dataUrl;
+    });
+  });
+  return images;
+}
+
+function setStatus(msg, type) {
+  var el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status' + (type ? ' ' + type : '');
+  if (type !== 'error') setTimeout(function() { el.textContent = ''; el.className = 'status'; }, 5000);
+}
+
+function loadTocAndPublish() {
+  var series = document.getElementById('series').value;
+  var varName = 'SERIES_' + series.toUpperCase();
+  if (window[varName]) {
+    publishToServer();
+    return;
+  }
+  var script = document.createElement('script');
+  script.src = 'https://www.treebune.cc/js/toc-' + series + '.js';
+  script.onload = function() { publishToServer(); };
+  script.onerror = function() { publishToServer(); };
+  document.head.appendChild(script);
+}
+
+function publishToServer() {
+  var series = document.getElementById('series').value;
+  var chapNum = parseInt(document.getElementById('chap-num').value);
+  var pubDate = document.getElementById('pub-date').value;
+  var title = document.getElementById('title').value.trim();
+  var subtitle = document.getElementById('subtitle').value.trim();
+  var metaDesc = document.getElementById('meta-desc').value.trim();
+  var ogImage = document.getElementById('og-image').value.trim();
+  var note = document.getElementById('note').value.trim();
+
+  if (!chapNum || !title) { setStatus('請填寫章節編號和標題', 'error'); return; }
+
+  var html = buildHTML(series, chapNum, pubDate, title, subtitle, metaDesc, ogImage);
+  var images = getImagePayload();
+
+  var btn = document.getElementById('publish-btn');
+  btn.disabled = true;
+  setStatus('發布中⋯⋯');
+
+  fetch(SERVER, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'publish',
+      series: series,
+      chap_num: chapNum,
+      title: title,
+      html: html,
+      desc: metaDesc,
+      note: note,
+      images: images
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    btn.disabled = false;
+    if (data.ok) {
+      setStatus('發布成功！' + (data.message || ''), 'success');
+    } else {
+      setStatus('發布失敗：' + (data.error || data.message || ''), 'error');
+    }
+  })
+  .catch(function() {
+    btn.disabled = false;
+    setStatus('無法連線到伺服器，請確認 server.py 有在執行', 'error');
+  });
+}
+
+function updateNoteOnly() {
+  var note = document.getElementById('note-only').value.trim();
+  if (!note) { setStatus('請填寫近況內容', 'error'); return; }
+  setStatus('更新中⋯⋯');
+  fetch(SERVER, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'update_note', note: note })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) setStatus('近況已更新', 'success');
+    else setStatus('失敗：' + (data.error || ''), 'error');
+  })
+  .catch(function() { setStatus('無法連線到伺服器', 'error'); });
+}
+
+function generateHTML() {
+  var series = document.getElementById('series').value;
+  var chapNum = parseInt(document.getElementById('chap-num').value);
+  var pubDate = document.getElementById('pub-date').value;
+  var title = document.getElementById('title').value.trim();
+  var subtitle = document.getElementById('subtitle').value.trim();
+  var metaDesc = document.getElementById('meta-desc').value.trim();
+  var ogImage = document.getElementById('og-image').value.trim();
+  if (!chapNum || !title) { setStatus('請填寫章節編號和標題', 'error'); return; }
+  var html = buildHTML(series, chapNum, pubDate, title, subtitle, metaDesc, ogImage);
+  var chapStr = String(chapNum).padStart(2, '0');
+  var blob = new Blob([html], { type: 'text/html' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = chapStr + '.html';
+  a.click();
+  setStatus('已下載 ' + chapStr + '.html');
+}
+
+function openPreview() {
+  var series = document.getElementById('series').value;
+  var chapNum = parseInt(document.getElementById('chap-num').value) || 1;
+  var pubDate = document.getElementById('pub-date').value;
+  var title = document.getElementById('title').value || '標題';
+  var subtitle = document.getElementById('subtitle').value;
+  var seriesName = SERIES_NAMES[series];
+  var blocks = getBlocks();
+  var html = '<p style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#9a9a98;margin-bottom:.75rem;">' + seriesName + ' · 第' + chapNum + '篇</p>';
+  html += '<h1 style="font-size:28px;font-weight:400;margin-bottom:.35rem;font-family:Georgia,serif;">' + title + '</h1>';
+  if (subtitle) html += '<p style="font-size:15px;font-style:italic;color:#6a6a68;margin-bottom:.4rem;">' + subtitle + '</p>';
+  if (pubDate) html += '<p style="font-size:12px;color:#9a9a98;font-style:italic;margin-bottom:1.5rem;">' + pubDate + '</p>';
+  html += '<div style="width:36px;height:.5px;background:#c8c4ba;margin-bottom:2rem;"></div>';
+  html += '<div style="font-size:17px;line-height:2.1;color:#3a3a38;max-width:520px;">';
+  blocks.forEach(function(b) {
+    if (b.type === 'text') html += '<p style="margin-bottom:1.4rem;">' + b.html + '</p>';
+    else if (b.type === 'heading') html += '<p style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9a9a98;margin:1.5rem 0 .5rem;">' + b.text + '</p>';
+    else if (b.type === 'quote') html += '<blockquote style="border-left:2px solid #c8c4ba;padding-left:1.2rem;margin:1.5rem 0;font-style:italic;color:#6a6a68;font-size:17px;line-height:1.85;">' + b.html + '</blockquote>';
+    else if (b.type === 'cite') {
+      html += '<blockquote style="border-left:2px solid #c8c4ba;padding:.75rem 1.2rem;margin:1.5rem 0;font-style:italic;color:#6a6a68;font-size:15px;line-height:1.85;background:#f2ede6;">' + b.text;
+      if (b.source) html += '<br><span style="font-size:11px;font-style:normal;">' + b.source + '</span>';
+      html += '</blockquote>';
+    } else if (b.type === 'img') {
+      var imgEl = document.getElementById('img-' + b.id + '-0');
+      if (imgEl && imgEl.src && imgEl.src !== window.location.href) {
+        html += '<div style="margin:1.5rem -2rem;"><img src="' + imgEl.src + '" style="width:100%;display:block;">';
+        if (b.caption) html += '<p style="font-size:11px;font-style:italic;color:#9a9a98;margin-top:.4rem;padding:0 2rem;">' + b.caption + '</p>';
+        html += '</div>';
+      }
+    } else if (b.type === 'img2') {
+      var imgA = document.getElementById('img-' + b.id + '-a');
+      var imgB = document.getElementById('img-' + b.id + '-b');
+      if (imgA && imgA.src && imgA.src !== window.location.href) {
+        html += '<div style="margin:1.5rem -2rem;display:grid;grid-template-columns:1fr 1fr;gap:6px;">';
+        html += '<img src="' + imgA.src + '" style="width:100%;display:block;">';
+        if (imgB && imgB.src) html += '<img src="' + imgB.src + '" style="width:100%;display:block;">';
+        html += '</div>';
+        if (b.caption) html += '<p style="font-size:11px;font-style:italic;color:#9a9a98;margin-top:.4rem;">' + b.caption + '</p>';
+      }
+    }
+  });
+  html += '</div>';
+  document.getElementById('preview-content').innerHTML = html;
+  document.getElementById('preview').classList.add('open');
+}
+
+function closePreview() { document.getElementById('preview').classList.remove('open'); }
+
+function updateFeatured() {
+  var main = {
+    series: document.getElementById('feat-main-series').value.trim(),
+    title: document.getElementById('feat-main-title').value.trim(),
+    desc: document.getElementById('feat-main-desc').value.trim(),
+    href: document.getElementById('feat-main-href').value.trim()
+  };
+  var side1 = {
+    series: document.getElementById('feat-side1-series').value.trim(),
+    title: document.getElementById('feat-side1-title').value.trim(),
+    desc: document.getElementById('feat-side1-desc').value.trim(),
+    href: document.getElementById('feat-side1-href').value.trim()
+  };
+  var side2 = {
+    series: document.getElementById('feat-side2-series').value.trim(),
+    title: document.getElementById('feat-side2-title').value.trim(),
+    desc: document.getElementById('feat-side2-desc').value.trim(),
+    href: document.getElementById('feat-side2-href').value.trim()
+  };
+  if (!main.title || !main.href) { setStatus('請填寫主推標題和連結', 'error'); return; }
+  setStatus('更新中⋯⋯');
+  fetch(SERVER, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'update_featured', main: main, side1: side1, side2: side2 })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.ok) setStatus('推薦文章已更新', 'success');
+    else setStatus('失敗：' + (data.error || ''), 'error');
+  })
+  .catch(function() { setStatus('無法連線到伺服器', 'error'); });
+}
+</script>
+<script>
+var HASH = '872e4e50ce9990d8b041330c47c9ddd11bec6b503ae9386a99da8584e9bb12c4';
+function checkGate() {
+  var val = document.getElementById('gate-input').value;
+  crypto.subtle.digest('SHA-256', new TextEncoder().encode(val)).then(function(b) {
+    var hex = [...new Uint8Array(b)].map(function(x){ return x.toString(16).padStart(2,'0'); }).join('');
+    if (hex === HASH) {
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('app').style.display = 'grid';
+    } else {
+      document.getElementById('gate-error').textContent = '密碼不正確';
+      document.getElementById('gate-input').value = '';
+      document.getElementById('gate-input').focus();
+    }
+  });
+}
+document.getElementById('gate-input').focus();
+</script>
+</body>
+</html>
