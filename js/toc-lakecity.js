@@ -1,7 +1,7 @@
 var SERIES_LAKECITY = {
   "key": "lakecity",
   "name": "湖城記事",
-  "total": 16,
+  "total": 17,
   "chapters": [
     {
       "num": 1,
@@ -82,6 +82,11 @@ var SERIES_LAKECITY = {
       "num": 16,
       "title": "侍酒師",
       "file": "16.html"
+    },
+    {
+      "num": 17,
+      "title": "鏡廳",
+      "file": "17.html"
     }
   ]
 };
