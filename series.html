@@ -20,6 +20,8 @@
 .series-item-title { font-size: 15px; color: var(--text-primary); font-family: var(--serif); }
 .series-item-num { font-size: 10px; letter-spacing: 0.1em; color: var(--text-faint); }
 .series-item:last-child a { border-bottom: none; }
+.series-item-all a { border-bottom: 0.5px solid var(--border); }
+.series-item-all .series-item-num { font-style: italic; }
 .series-back { display: inline-block; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-faint); margin-top: 2.5rem; transition: color 0.15s; text-decoration: none; }
 .series-back:hover { color: var(--text-primary); }
 </style>
@@ -55,19 +57,33 @@ script.onload = function() {
 
   document.getElementById('page-title').textContent = data.name + ' — 寫在掌心的領悟';
   document.getElementById('series-title').textContent = data.name;
-  document.getElementById('series-count').textContent = '共 ' + data.total + ' 篇';
+
+  // 計算實際篇數（不含 num:0 的特殊條目）
+  var realTotal = data.chapters.filter(function(ch) { return ch.num > 0; }).length;
+  document.getElementById('series-count').textContent = '共 ' + realTotal + ' 篇';
 
   var list = document.getElementById('series-list');
   var chapters = key === 'suosui' ? data.chapters.slice().reverse() : data.chapters;
 
   chapters.forEach(function(ch) {
-    var numStr = String(ch.num).padStart(2, '0');
     var li = document.createElement('li');
     li.className = 'series-item';
-    li.innerHTML = '<a href="/chapters/' + key + '/' + numStr + '.html">' +
-      '<span class="series-item-title">' + (ch.title || '第' + ch.num + '篇') + '</span>' +
-      '<span class="series-item-num">' + numStr + '</span>' +
-      '</a>';
+
+    // num:0 是特殊全卷條目
+    if (ch.num === 0) {
+      li.classList.add('series-item-all');
+      li.innerHTML = '<a href="/chapters/' + key + '/' + ch.file + '">' +
+        '<span class="series-item-title">' + ch.title + '</span>' +
+        '<span class="series-item-num">全覽</span>' +
+        '</a>';
+    } else {
+      var numStr = String(ch.num).padStart(2, '0');
+      li.innerHTML = '<a href="/chapters/' + key + '/' + numStr + '.html">' +
+        '<span class="series-item-title">' + (ch.title || '第' + ch.num + '篇') + '</span>' +
+        '<span class="series-item-num">' + numStr + '</span>' +
+        '</a>';
+    }
+
     list.appendChild(li);
   });
 };
