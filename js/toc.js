@@ -14,7 +14,9 @@
     var sidebar = document.querySelector('.reading-sidebar');
     if (!sidebar) return;
 
-    var total = data.total;
+    // 排除 num:0 的特殊條目，只計算實際篇數
+    var realChapters = data.chapters.filter(function(ch) { return ch.num > 0; });
+    var total = realChapters.length;
     var pct = Math.round((currentNum / total) * 100);
 
     var html = '<p class="section-label">' + data.name + '</p>';
@@ -22,7 +24,9 @@
     html += '<p class="progress-label">第 ' + currentNum + ' 篇，共 ' + total + ' 篇</p>';
     html += '<ul class="toc-list">';
 
-    var chapters = key === 'suosui' ? data.chapters.slice().reverse() : data.chapters;
+    // 側欄只顯示實際篇章，排除 num:0 的特殊條目
+    var filtered = data.chapters.filter(function(ch) { return ch.num > 0; });
+    var chapters = key === 'suosui' ? filtered.slice().reverse() : filtered;
 
     chapters.forEach(function(ch) {
       var numStr = String(ch.num).padStart(2, '0');
