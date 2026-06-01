@@ -15,21 +15,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400&display=swap" rel="stylesheet">
   <style>
     .scroll-page {
+      max-width: var(--max-w, 860px);
+      margin: 0 auto;
       padding: 60px 0 0;
     }
     .scroll-header {
-      padding: 0 60px 48px;
+      padding: 0 2.5rem 36px;
     }
     .scroll-header .chapter-series {
       font-family: var(--font-serif, 'Noto Serif TC', Georgia, serif);
-      font-size: 12px;
+      font-size: 9px;
       color: #b0a898;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
       margin-bottom: 10px;
     }
     .scroll-header h1 {
       font-family: var(--font-serif, 'Noto Serif TC', Georgia, serif);
-      font-size: 22px;
+      font-size: 28px;
       font-weight: 400;
       color: #4a4238;
       letter-spacing: 0.06em;
@@ -37,9 +40,25 @@
     }
     .scroll-header .chapter-divider {
       width: 32px;
-      height: 1px;
+      height: 0.5px;
       background: #d4ccc0;
     }
+    /* 滾動容器，帶右側漸層提示 */
+    .scroll-wrap {
+      position: relative;
+    }
+    .scroll-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 80px;
+      height: 100%;
+      background: linear-gradient(to right, transparent, var(--bg, #f5f0e8));
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity 0.3s;
+    }
+    .scroll-wrap.at-end::after { opacity: 0; }
     .scroll-outer {
       width: 100%;
       overflow-x: auto;
@@ -47,7 +66,9 @@
       cursor: grab;
       user-select: none;
       padding-bottom: 20px;
+      scrollbar-width: none;
     }
+    .scroll-outer::-webkit-scrollbar { display: none; }
     .scroll-outer:active { cursor: grabbing; }
     .stage {
       position: relative;
@@ -84,16 +105,20 @@
     }
     .prose p { margin-bottom: 0.9em; }
     .prose p:last-child { margin-bottom: 0; padding-bottom: 80px; }
-    .scroll-hint {
+    /* 箭頭提示 */
+    .scroll-arrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 2.5rem 0;
       font-family: 'Noto Serif TC', Georgia, serif;
       font-size: 11px;
-      color: #c8c0b8;
-      text-align: center;
-      padding: 6px 0 16px;
-      letter-spacing: 0.08em;
+      color: #c0b4a8;
+      letter-spacing: 0.1em;
     }
+    .scroll-arrow svg { opacity: 0.5; }
     .scroll-nav {
-      padding: 32px 60px 60px;
+      padding: 32px 2.5rem 60px;
       display: flex;
       justify-content: space-between;
     }
@@ -117,6 +142,7 @@
       <div class="chapter-divider"></div>
     </div>
 
+    <div class="scroll-wrap" id="wrap">
     <div class="scroll-outer" id="outer">
       <div class="stage" id="stage">
 
@@ -227,8 +253,15 @@
 
       </div>
     </div>
+    </div>
 
-    <p class="scroll-hint">← 左右拖曳 →</p>
+    <div class="scroll-arrow">
+      <svg width="32" height="10" viewBox="0 0 32 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="5" x2="28" y2="5" stroke="#c0b4a8" stroke-width="0.8"/>
+        <path d="M24 1.5 L29 5 L24 8.5" stroke="#c0b4a8" stroke-width="0.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      拖曳展開
+    </div>
 
     <nav class="scroll-nav">
       <a href="01.html">← 名字・之一</a>
@@ -239,6 +272,7 @@
   <script>
     // 拖曳
     const o = document.getElementById('outer');
+    const wrap = document.getElementById('wrap');
     let down = false, sx, sl;
     o.addEventListener('mousedown', e => { down = true; sx = e.pageX - o.offsetLeft; sl = o.scrollLeft; });
     o.addEventListener('mouseleave', () => down = false);
@@ -247,6 +281,11 @@
       if (!down) return;
       e.preventDefault();
       o.scrollLeft = sl - (e.pageX - o.offsetLeft - sx);
+    });
+    // 到底時隱藏右側漸層
+    o.addEventListener('scroll', () => {
+      const atEnd = o.scrollLeft + o.clientWidth >= o.scrollWidth - 10;
+      wrap.classList.toggle('at-end', atEnd);
     });
 
     // 動態繪製插圖，依實際高度
