@@ -32,6 +32,11 @@ SERIES_NAMES = {
     'suosui': '瑣碎集',
 }
 
+# 各系列的特殊條目（num:0），會插在目錄最前面
+SERIES_SPECIAL = {
+    'name': {'num': 0, 'title': '名字・全', 'file': 'all.html'},
+}
+
 def get_title(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
@@ -59,6 +64,13 @@ def regenerate_toc(series_key):
         filepath = os.path.join(series_dir, filename)
         title = get_title(filepath)
         chapters.append({'num': num, 'title': title, 'file': filename})
+
+    # 如果這個系列有特殊條目（如全卷），且對應檔案存在，插在最前面
+    special = SERIES_SPECIAL.get(series_key)
+    if special:
+        special_path = os.path.join(series_dir, special['file'])
+        if os.path.isfile(special_path):
+            chapters.insert(0, special)
 
     data = {
         'key': series_key,
